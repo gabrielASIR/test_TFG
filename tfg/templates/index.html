@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido al proyecto TFG</title>
+</head>
+<body>
+    <h1>Bienvenido al proyecto TFG</h1>
+    <p>Aqui ira el texto de información, el cual será añadido al final.</p>
+    <h2>Menú</h2>
+    <ul>
+        <li><a href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+        <li><a href="{% url 'redes:dhcp' %}">DHCP</a></li>
+        <li><a href="{% url 'redes:dns' %}">DNS</a></li>
+        <li><a href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+    </ul>
+</body>
+</html>

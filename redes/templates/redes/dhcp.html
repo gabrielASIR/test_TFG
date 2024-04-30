@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración DHCP</title>
+</head>
+<body>
+    <h1>Configuración DHCP</h1>
+    
+    <h2>Configuración Cliente DHCP</h2>
+    <form method="post" action="{% url 'redes:dhcp' %}">
+        {% csrf_token %}
+        <label for="nombre_cliente">Nombre del cliente:</label><br>
+        <input type="text" id="nombre_cliente" name="nombre_cliente"><br><br>
+
+        <label for="direccion_ip">Dirección IP deseada:</label><br>
+        <input type="text" id="direccion_ip" name="direccion_ip"><br><br>
+
+        <label for="mac_address">Dirección MAC:</label><br>
+        <input type="text" id="mac_address" name="mac_address"><br><br>
+
+        <label for="interfaz">Interfaz:</label><br>
+        <select id="interfaz" name="interfaz">
+            <option value="enp0s3">enp0s3</option>
+            <option value="enp0s8">enp0s8</option>
+        </select><br><br>
+
+        <label for="direccion_servidor">Dirección del servidor DHCP:</label><br>
+        <input type="text" id="direccion_servidor" name="direccion_servidor"><br><br>
+
+        <button type="submit">Guardar Configuración</button>
+    </form>
+
+    <h2>Petición de Reserva de Dirección IP</h2>
+    <form method="post" action="{% url 'redes:reserva_ip' %}">
+        {% csrf_token %}
+        <label for="nombre_cliente_reserva">Nombre del cliente:</label><br>
+        <input type="text" id="nombre_cliente_reserva" name="nombre_cliente_reserva"><br><br>
+
+        <label for="direccion_ip_reserva">Dirección IP a reservar:</label><br>
+        <input type="text" id="direccion_ip_reserva" name="direccion_ip_reserva"><br><br>
+
+        <label for="mac_address_reserva">Dirección MAC:</label><br>
+        <input type="text" id="mac_address_reserva" name="mac_address_reserva"><br><br>
+
+        <label for="direccion_servidor_reserva">Dirección del servidor DHCP:</label><br>
+        <input type="text" id="direccion_servidor_reserva" name="direccion_servidor_reserva"><br><br>
+
+        <button type="submit">Solicitar Reserva</button>
+    </form>
+</body>
+</html>

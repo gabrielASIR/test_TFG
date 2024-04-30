@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Interfaces de Red</title>
+</head>
+<body>
+    <h1>Configuración de Interfaces de Red</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre">Nombre de la interfaz:</label><br>
+        <input type="text" id="nombre" name="nombre"><br><br>
+        
+        <label for="direccion_ip">Dirección IP:</label><br>
+        <input type="text" id="direccion_ip" name="direccion_ip"><br><br>
+        
+        <label for="mascara_subred">Máscara de subred:</label><br>
+        <input type="text" id="mascara_subred" name="mascara_subred"><br><br>
+        
+        <label for="puerta_enlace">Puerta de enlace predeterminada:</label><br>
+        <input type="text" id="puerta_enlace" name="puerta_enlace"><br><br>
+        
+        <label for="dns_primario">DNS primario:</label><br>
+        <input type="text" id="dns_primario" name="dns_primario"><br><br>
+        
+        <label for="dns_secundario">DNS secundario:</label><br>
+        <input type="text" id="dns_secundario" name="dns_secundario"><br><br>
+        
+        <label for="tipo_conexion">Tipo de conexión:</label><br>
+        <select id="tipo_conexion" name="tipo_conexion">
+            <option value="Ethernet">Ethernet</option>
+            <option value="Wi-Fi">Wi-Fi</option>
+        </select><br><br>
+        
+        <label for="estado">Estado de la interfaz:</label><br>
+        <input type="radio" id="activo" name="estado" value="A">
+        <label for="activo">Activo</label><br>
+        <input type="radio" id="inactivo" name="estado" value="I">
+        <label for="inactivo">Inactivo</label><br><br>
+        
+        <button type="submit">Guardar Configuración</button>
+    </form>
+</body>
+</html>
