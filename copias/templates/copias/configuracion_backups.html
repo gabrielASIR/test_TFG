@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Copias de Seguridad</title>
+</head>
+<body>
+    <h1>Configuración de Copias de Seguridad</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre_backup">Nombre del backup:</label><br>
+        <input type="text" id="nombre_backup" name="nombre_backup"><br><br>
+
+        <label for="ruta_origen">Ruta de origen:</label><br>
+        <input type="text" id="ruta_origen" name="ruta_origen"><br><br>
+
+        <label for="ruta_destino">Ruta de destino:</label><br>
+        <input type="text" id="ruta_destino" name="ruta_destino"><br><br>
+
+        <label for="metodo_copia">Método de copia:</label><br>
+        <select id="metodo_copia" name="metodo_copia">
+            <option value="cp">Cp</option>
+            <option value="rsync">Rsync</option>
+            <option value="tar">Tar</option>
+        </select><br><br>
+
+        <label for="clave_encriptacion">Clave de encriptación:</label><br>
+        <input type="password" id="clave_encriptacion" name="clave_encriptacion"><br><br>
+
+        <label for="compresion">Compresión:</label><br>
+        <select id="compresion" name="compresion">
+            <option value="none">Ninguna</option>
+            <option value="gzip">Gzip</option>
+            <option value="bzip2">Bzip2</option>
+        </select><br><br>
+
+        <label for="exclusiones">Exclusiones:</label><br>
+        <input type="text" id="exclusiones" name="exclusiones"><br><br>
+
+        <button type="submit">Generar Script de Backup</button>
+    </form>
+</body>
+</html>

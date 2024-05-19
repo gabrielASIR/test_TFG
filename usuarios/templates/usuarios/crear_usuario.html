@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Usuario</title>
+</head>
+<body>
+    <h1>Creación de Usuario</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre_usuario">Nombre de usuario:</label><br>
+        <input type="text" id="nombre_usuario" name="nombre_usuario"><br><br>
+
+        <label for="contrasena">Contraseña:</label><br>
+        <input type="password" id="contrasena" name="contrasena"><br><br>
+
+        <label for="grupo_principal">Grupo principal:</label><br>
+        <input type="text" id="grupo_principal" name="grupo_principal"><br><br>
+
+        <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
+        <input type="text" id="otros_grupos" name="otros_grupos"><br><br>
+
+        <label for="nombre_completo">Nombre completo:</label><br>
+        <input type="text" id="nombre_completo" name="nombre_completo"><br><br>
+
+        <label for="directorios">Directorios a crear (separados por comas):</label><br>
+        <input type="text" id="directorios" name="directorios"><br><br>
+
+        <label for="skel">Directorio skel:</label><br>
+        <input type="text" id="skel" name="skel"><br><br>
+
+        <label for="home">Directorio home:</label><br>
+        <input type="text" id="home" name="home"><br><br>
+
+        <label for="shell">Shell:</label><br>
+        <input type="text" id="shell" name="shell" value="/bin/bash"><br><br>
+
+        <label for="expire">Fecha de expiración de la cuenta:</label><br>
+        <input type="text" id="expire" name="expire"><br><br>
+
+        <label for="uid">UID:</label><br>
+        <input type="text" id="uid" name="uid"><br><br>
+
+        <label for="gid">GID:</label><br>
+        <input type="text" id="gid" name="gid"><br><br>
+
+        <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
+        <input type="text" id="inactive" name="inactive"><br><br>
+
+        <label for="create_home">Crear directorio home:</label>
+        <input type="checkbox" id="create_home" name="create_home" value="yes"><br><br>
+
+        <label for="copy_skel">Copiar archivos de skel:</label>
+        <input type="checkbox" id="copy_skel" name="copy_skel" value="yes"><br><br>
+
+        <button type="submit">Crear Usuario</button>
+    </form>
+    <h1>Creación de Usuarios Secuenciales</h1>
+    <form method="post" action="{% url 'usuarios:crear_usuarios_secuenciales' %}">
+        {% csrf_token %}
+        <label for="prefijo">Prefijo del usuario:</label><br>
+        <input type="text" id="prefijo" name="prefijo" placeholder="usu"><br><br>
+
+        <label for="inicio">Número de inicio:</label><br>
+        <input type="number" id="inicio" name="inicio" min="1" value="1"><br><br>
+
+        <label for="fin">Número de fin:</label><br>
+        <input type="number" id="fin" name="fin" min="1" value="10"><br><br>
+
+        <button type="submit">Crear Usuarios</button>
+    </form>
+</body>
+</html>

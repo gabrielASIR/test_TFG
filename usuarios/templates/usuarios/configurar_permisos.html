@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de permisos</title>
+</head>
+<body>
+    <h1>Configuración de permisos</h1>
+    <h2>Pedir permisos para un directorio</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="directorio">Directorio:</label><br>
+        <input type="text" id="directorio" name="directorio"><br><br>
+
+        <label for="usuario">Usuario:</label><br>
+        <input type="text" id="usuario" name="usuario"><br><br>
+
+        <label for="permisos">Permisos para usuario:</label><br>
+        <select id="permisos" name="permisos">
+            <option value="7">Control total</option>
+            <option value="6">Lectura y escritura</option>
+            <option value="5">Lectura y ejecución</option>
+            <option value="4">Solo lectura</option>
+            <option value="3">Escritura y ejecución</option>
+            <option value="2">Solo escritura</option>
+            <option value="1">Solo ejecución</option>
+            <option value="0">Nada</option>
+        </select><br><br>
+
+        <label for="permisos_grupo">Permisos para grupo:</label><br>
+        <select id="permisos_grupo" name="permisos_grupo">
+            <option value="7">Control total</option>
+            <option value="6">Lectura y escritura</option>
+            <option value="5">Lectura y ejecución</option>
+            <option value="4">Solo lectura</option>
+            <option value="3">Escritura y ejecución</option>
+            <option value="2">Solo escritura</option>
+            <option value="1">Solo ejecución</option>
+            <option value="0">Nada</option>
+        </select><br><br>
+
+        <label for="permisos_otros">Permisos para otros:</label><br>
+        <select id="permisos_otros" name="permisos_otros">
+            <option value="7">Control total</option>
+            <option value="6">Lectura y escritura</option>
+            <option value="5">Lectura y ejecución</option>
+            <option value="4">Solo lectura</option>
+            <option value="3">Escritura y ejecución</option>
+            <option value="2">Solo escritura</option>
+            <option value="1">Solo ejecución</option>
+            <option value="0">Nada</option>
+        </select><br><br>
+
+        <button type="submit">Pedir Permisos</button>
+    </form>
+
+    <h2>Cambiar usuario/grupo de un directorio</h2>
+    <form method="post" action="{% url 'usuarios:cambiar_usuario_grupo' %}">
+        {% csrf_token %}
+        <label for="directorio">Directorio:</label><br>
+        <input type="text" id="directorio" name="directorio"><br><br>
+
+        <label for="usuario">Usuario</label><br>
+        <input type="text" id="usuario" name="usuario"><br><br>
+
+	<label for="grupo">Grupo:</label><br>
+        <input type="text" id="grupo" name="grupo"><br><br>
+
+        <label for="tipo">Tipo de cambio:</label><br>
+        <select id="tipo" name="tipo">
+            <option value="u">Cambiar usuario</option>
+            <option value="g">Cambiar grupo</option>
+        </select><br><br>
+
+        <button type="submit">Cambiar Usuario/Grupo</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Proxy con Squid</title>
+</head>
+<body>
+    <h1>Configuración de Proxy con Squid</h1>
+    <p>Siga los siguientes pasos para instalar y configurar Squid:</p>
+    <ol>
+        <li>Actualice su sistema: <code>sudo apt-get update</code></li>
+        <li>Instale Squid: <code>sudo apt-get install squid</code></li>
+        <li>Configure Squid editando <code>/etc/squid/squid.conf</code></li>
+        <li>Reinicie Squid: <code>sudo systemctl restart squid</code></li>
+    </ol>
+    <hr>
+    <h2>Configuración de Reglas Proxy</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div id="reglas-container">
+            <div class="regla">
+                <label for="acl">ACL:</label><br>
+                <input type="text" id="acl" name="acl[]" placeholder="Ej: acl"><br><br>
+                
+                <label for="tipo_acl">Tipo de ACL:</label><br>
+                <select id="tipo_acl" name="tipo_acl[]">
+                    <option value="src">Origen (src)</option>
+                    <option value="dst">Destino (dst)</option>
+                    <option value="dstdomain">Dominio de Destino (dstdomain)</option>
+                    <option value="url_regex">Expresión Regular de URL (url_regex)</option>
+                    <option value="time">Tiempo (time)</option>
+                    <option value="urlpath_regex">Expresión Regular de Ruta de URL (urlpath_regex)</option>
+                    <option value="port">Puerto (port)</option>
+                    <option value="proxy_auth">Autenticación de Proxy (proxy_auth)</option>
+                </select><br><br>
+                
+                <label for="direccion_ip">Dirección IP:</label><br>
+                <input type="text" id="direccion_ip" name="direccion_ip[]" placeholder="Ej: 192.168.1.0"><br><br>
+                
+                <label for="mascara_subred">Máscara de Subred:</label><br>
+                <input type="text" id="mascara_subred" name="mascara_subred[]" placeholder="Ej: 255.255.255.0"><br><br>
+                
+                <label for="detalle_acl">Detalle ACL:</label><br>
+                <input type="text" id="detalle_acl" name="detalle_acl[]" placeholder="Ej: 192.168.1.0/24, /etc/squid/allowlist.txt, etc."><br><br>
+                
+                <label for="permitir_denegar">Allow/Deny:</label><br>
+                <input type="text" id="permitir_denegar" name="permitir_denegar[]" placeholder="Allow o deny"><br><br>
+
+                <label for="ruta_configuracion">Ruta de Configuración:</label><br>
+                <input type="text" id="ruta_configuracion" name="ruta_configuracion[]" placeholder="Ej: /etc/squid/conf.d/squid-custom.conf"><br><br>
+            </div>
+        </div>
+        
+        <!-- Botón para agregar más reglas -->
+        <button type="button" onclick="agregarRegla()">Agregar Regla</button><br><br>
+        
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Aplicar Configuración</button>
+    </form>
+
+    <script>
+        function agregarRegla() {
+            var reglaContainer = document.querySelector('.regla');
+            var newRegla = reglaContainer.cloneNode(true);
+            var inputs = newRegla.querySelectorAll('input[type="text"], input[type="number"], select');
+            inputs.forEach(function(input) {
+                if (input.type !== 'checkbox' && input.type !== 'radio') {
+                    input.value = '';
+                }
+            });
+            document.getElementById('reglas-container').appendChild(newRegla);
+        }
+    </script>
+</body>
+</html>

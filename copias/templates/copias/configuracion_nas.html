@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de NAS y Subida de Archivos</title>
+</head>
+<body>
+    <h1>Configuración de NAS y Subida de Archivos</h1>
+    <h2>Configuración del NAS</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre_nas">Nombre del NAS:</label><br>
+        <input type="text" id="nombre_nas" name="nombre_nas"><br><br>
+        
+        <label for="direccion_nas">Dirección del NAS:</label><br>
+        <input type="text" id="direccion_nas" name="direccion_nas"><br><br>
+        
+        <label for="usuario_nas">Usuario del NAS:</label><br>
+        <input type="text" id="usuario_nas" name="usuario_nas"><br><br>
+        
+        <label for="contrasena_nas">Contraseña del NAS:</label><br>
+        <input type="password" id="contrasena_nas" name="contrasena_nas"><br><br>
+        
+        <label for="protocolo">Protocolo de montaje:</label><br>
+        <select id="protocolo" name="protocolo">
+            <option value="cifs">CIFS</option>
+            <option value="nfs">NFS</option>
+        </select><br><br>
+        
+        <label for="ruta_montaje">Ruta de montaje:</label><br>
+        <input type="text" id="ruta_montaje" name="ruta_montaje"><br><br>
+        
+        <label for="permisos">Permisos de montaje:</label><br>
+        <input type="text" id="permisos" name="permisos"><br><br>
+        
+        <label for="modo_subida">Modo de subida:</label><br>
+        <select id="modo_subida" name="modo_subida">
+            <option value="manual">Manual</option>
+            <option value="automatico">Automático</option>
+        </select><br><br>
+        
+        <button type="submit">Configurar NAS</button>
+    </form>
+</body>
+</html>

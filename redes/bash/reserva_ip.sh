@@ -4,6 +4,8 @@ nombre_cliente="{nombre_cliente}"
 direccion_ip="{direccion_ip}"
 mac_address="{mac_address}"
 direccion_servidor="{direccion_servidor}"
+nombre_usuario="{nombre_usuario}"
+carpeta_destino="{carpeta_destino}"
 
 echo "Nombre del cliente: $nombre_cliente"
 echo "Dirección IP a reservar: $direccion_ip"
@@ -22,7 +24,7 @@ echo "echo 'host $nombre_cliente {
 	systemctl restart isc-dhcp-server" > reserva_${nombre_cliente}.sh
 
 	# Enviar el script de reserva de IP al servidor DHCP
-	scp reserva_${nombre_cliente}.sh usuario@$direccion_servidor:/ruta/a/carpeta/de/scripts/reservas/
+	scp reserva_${nombre_cliente}.sh $nombre_usuario@$direccion_servidor:$carpeta_destino
 
 	echo "Script de reserva de dirección IP generado y enviado al servidor DHCP."
 else

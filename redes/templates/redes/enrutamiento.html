@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Enrutamiento</title>
+</head>
+<body>
+    <h1>Configuración de Enrutamiento entre Redes</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="red_origen">Red Origen:</label><br>
+        <input type="text" id="red_origen" name="red_origen"><br><br>
+
+        <div id="rutas">
+            <div class="ruta">
+                <label for="red_destino">Red Destino:</label><br>
+                <input type="text" name="red_destino[]"><br><br>
+                <label for="gateway">Gateway:</label><br>
+                <input type="text" name="gateway[]"><br><br>
+		<label for="mascara_destino">Máscara:</label><br>
+                <input type="text" name="mascara_destino[]"><br><br>
+                <button type="button" onclick="eliminarRuta(this)">Eliminar</button>
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarRuta()">Agregar Ruta</button><br><br>
+
+        <button type="submit">Guardar Configuración de Enrutamiento</button>
+    </form>
+
+    <script>
+        function agregarRuta() {
+            var contenedor = document.getElementById("rutas");
+            var nuevaRuta = document.createElement("div");
+            nuevaRuta.className = "ruta";
+            nuevaRuta.innerHTML = `
+                <label for="red_destino">Red Destino:</label><br>
+                <input type="text" name="red_destino[]"><br><br>
+                <label for="gateway">Gateway:</label><br>
+                <input type="text" name="gateway[]"><br><br>
+		<label for="mascara_destino">Máscara:</label><br>
+                <input type="text" name="mascara_destino[]"><br><br>
+                <button type="button" onclick="eliminarRuta(this)">Eliminar</button>`;
+            contenedor.appendChild(nuevaRuta);
+        }
+
+        function eliminarRuta(boton) {
+            var ruta = boton.parentNode;
+            ruta.parentNode.removeChild(ruta);
+        }
+    </script>
+</body>
+</html>

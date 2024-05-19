@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Firewall</title>
+</head>
+<body>
+    <h1>Configuración de Firewall</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="politica_por_defecto">Política por defecto:</label><br>
+        <select id="politica_por_defecto" name="politica_por_defecto" required>
+            <option value="ACCEPT">ACCEPT</option>
+            <option value="DROP">DROP</option>
+        </select><br><br>
+
+        <input type="checkbox" id="borrar_configuraciones" name="borrar_configuraciones">
+        <label for="borrar_configuraciones">Borrar configuraciones</label><br><br>
+
+        <div id="reglas-container">
+            <div class="regla">
+                <label for="tabla">Tabla:</label><br>
+                <select id="tabla" name="tabla" required>
+                    <option value="filter">filter</option>
+                    <option value="nat">nat</option>
+                </select><br><br>
+
+                <label for="opcion">Opción:</label><br>
+                <select id="opcion" name="opcion" required>
+                    <option value="-A">Agregar (-A)</option>
+                    <option value="-I">Insertar (-I)</option>
+                    <option value="-D">Eliminar (-D)</option>
+                </select><br><br>
+
+                <label for="cadena">Cadena:</label><br>
+                <select id="cadena" name="cadena" required>
+                    <option value="INPUT">INPUT</option>
+                    <option value="OUTPUT">OUTPUT</option>
+                    <option value="FORWARD">FORWARD</option>
+                    <option value="PREROUTING">PREROUTING</option>
+                    <option value="POSTROUTING">POSTROUTING</option>
+                </select><br><br>
+
+                <label for="direccion_origen">Dirección de origen:</label><br>
+                <input type="text" id="direccion_origen" name="direccion_origen" placeholder="Ej: 192.168.1.1"><br><br>
+
+                <label for="puerto_origen">Puerto de origen:</label><br>
+                <input type="number" id="puerto_origen" name="puerto_origen" placeholder="Ej: 22"><br><br>
+
+                <label for="direccion_destino">Dirección de destino:</label><br>
+                <input type="text" id="direccion_destino" name="direccion_destino" placeholder="Ej: 192.168.1.2"><br><br>
+
+                <label for="puerto_destino">Puerto de destino:</label><br>
+                <input type="number" id="puerto_destino" name="puerto_destino" placeholder="Ej: 22"><br><br>
+
+                <label for="protocolo">Protocolo:</label><br>
+                <select id="protocolo" name="protocolo">
+                    <option value="">Cualquiera</option>
+                    <option value="tcp">TCP</option>
+                    <option value="udp">UDP</option>
+                    <option value="icmp">ICMP</option>
+                    <option value="all">ALL</option>
+                </select><br><br>
+
+                <label for="accion">Acción:</label><br>
+                <select id="accion" name="accion" required>
+                    <option value="ACCEPT">ACCEPT</option>
+                    <option value="DROP">DROP</option>
+                    <option value="REJECT">REJECT</option>
+                </select><br><br>
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarRegla()">Agregar Regla</button>
+        <button type="submit">Aplicar Reglas</button>
+    </form>
+
+    <script>
+        function agregarRegla() {
+            var reglaContainer = document.querySelector('.regla');
+            var newRegla = reglaContainer.cloneNode(true);
+            var inputs = newRegla.querySelectorAll('input[type="text"], input[type="number"], select');
+            inputs.forEach(function(input) {
+                if (input.type !== 'checkbox' && input.type !== 'radio') {
+                    input.value = '';
+                }
+            });
+            document.getElementById('reglas-container').appendChild(newRegla);
+        }
+    </script>
+</body>
+</html>

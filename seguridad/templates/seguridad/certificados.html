@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generación de Certificados SSL/TLS</title>
+</head>
+<body>
+    <h1>Generación de Certificados SSL/TLS</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_nombre_certificado">Nombre del certificado:</label><br>
+        <input type="text" id="id_nombre_certificado" name="nombre_certificado" required><br><br>
+
+        <label for="id_organizacion">Organización:</label><br>
+        <input type="text" id="id_organizacion" name="organizacion"><br><br>
+
+        <label for="id_unidad_organizacional">Unidad organizacional:</label><br>
+        <input type="text" id="id_unidad_organizacional" name="unidad_organizacional"><br><br>
+
+        <label for="id_localidad">Localidad:</label><br>
+        <input type="text" id="id_localidad" name="localidad"><br><br>
+
+        <label for="id_provincia">Provincia:</label><br>
+        <input type="text" id="id_provincia" name="provincia"><br><br>
+
+        <label for="id_pais">País:</label><br>
+        <input type="text" id="id_pais" name="pais"><br><br>
+
+        <label for="id_correo_electronico">Correo electrónico:</label><br>
+        <input type="email" id="id_correo_electronico" name="correo_electronico"><br><br>
+
+        <label for="id_departamento">Departamento:</label><br>
+        <input type="text" id="id_departamento" name="departamento"><br><br>
+
+        <label for="id_clave">Clave:</label><br>
+        <input type="password" id="id_clave" name="clave" required><br><br>
+
+        <label for="id_repeticion_clave">Repetir Clave:</label><br>
+        <input type="password" id="id_repeticion_clave" name="repeticion_clave" required><br><br>
+
+        <label for="id_comentarios">Comentarios:</label><br>
+        <textarea id="id_comentarios" name="comentarios"></textarea><br><br>
+
+        <label for="directorio_salida">Directorio de Salida:</label><br>
+        <input type="text" id="directorio_salida" name="directorio_salida" required><br><br>
+
+        <input type="submit" value="Generar Certificado">
+    </form>
+</body>
+</html>

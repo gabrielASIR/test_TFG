@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de NAS y Subida de Archivos</title>
+</head>
+<body>
+    <h1>Configuración de NAS y Subida de Archivos</h1>
+    <h2>Subida de archivos al NAS</h2>
+    <form method="post">
+        {% csrf_token %}
+	<label for="nombre_nas">Nombre del NAS:</label><br>
+        <input type="text" id="nombre_nas" name="nombre_nas"><br><br>
+
+	<label for="ruta_montaje">Ruta de montaje:</label><br>
+        <input type="text" id="ruta_montaje" name="ruta_montaje"><br><br>
+
+        <label for="archivos">Rutas de archivos a subir:</label><br>
+        <textarea id="archivos" name="archivos" rows="4" cols="50"></textarea><br><br>
+
+        <label for="usuario_nas">Usuario del NAS:</label><br>
+        <input type="text" id="usuario_nas" name="usuario_nas"><br><br>
+
+        <label for="contrasena_nas">Contraseña del NAS:</label><br>
+        <input type="password" id="contrasena_nas" name="contrasena_nas"><br><br>
+
+        <!-- Agrega aquí los demás campos para la subida de archivos al NAS -->
+        <label for="sobrescribir">Sobrescribir archivos existentes:</label><br>
+        <input type="checkbox" id="sobrescribir" name="sobrescribir" value="sobrescribir"><br><br>
+
+        <label for="compresion">Compresión de archivos:</label><br>
+        <select id="compresion" name="compresion">
+            <option value="none">Ninguna</option>
+            <option value="gzip">Gzip</option>
+            <option value="bzip2">Bzip2</option>
+        </select><br><br>
+        
+        <button type="submit">Subir archivos al NAS</button>
+    </form>
+</body>
+</html>

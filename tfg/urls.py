@@ -24,4 +24,7 @@ urlpatterns = [
     
     # Incluye las URLs de la aplicación "redes"
     path('redes/', include('redes.urls')),
+    path('usuarios/', include('usuarios.urls')),
+    path('seguridad/', include('seguridad.urls')),
+    path('copias/', include('copias.urls')),
 ]

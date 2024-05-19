@@ -75,6 +75,8 @@ def reserva_ip(request):
         direccion_ip_reserva = request.POST.get('direccion_ip_reserva')
         mac_address_reserva = request.POST.get('mac_address_reserva')
         direccion_servidor_reserva = request.POST.get('direccion_servidor_reserva')
+        nombre_usuario_reserva = request.POST.get('nombre_usuario')
+        carpeta_destino_reserva = request.POST.get('carpeta_destino')
 
         # Ruta al script de Bash para la reserva de IP
         script_path = 'redes/bash/reserva_ip.sh'
@@ -88,6 +90,8 @@ def reserva_ip(request):
         script_content = script_content.replace('{direccion_ip}', direccion_ip_reserva)
         script_content = script_content.replace('{mac_address}', mac_address_reserva)
         script_content = script_content.replace('{direccion_servidor}', direccion_servidor_reserva)
+        script_content = script_content.replace('{nombre_usuario}', nombre_usuario_reserva)
+        script_content = script_content.replace('{carpeta_destino}', carpeta_destino_reserva)
 
         # Devolver el script de reserva de IP con las configuraciones aplicadas como una descarga de archivo
         response = HttpResponse(script_content, content_type='application/x-shellscript')
@@ -96,8 +100,59 @@ def reserva_ip(request):
     else:
         return render(request, 'redes/dhcp.html')
 
-def dns(request):
-    return render(request, 'redes/dns.html')
-
 def enrutamiento(request):
-    return render(request, 'redes/enrutamiento.html')
+    if request.method == 'POST':
+        red_origen = request.POST.get('red_origen')
+        rutas_destino = request.POST.getlist('red_destino[]')
+        mascaras_destino = request.POST.getlist('mascara_destino[]')
+        gateways = request.POST.getlist('gateway[]')
+
+        # Generar configuraciones de enrutamiento para cada ruta
+        configuraciones = ''
+        for red_destino, mascara, gateway in zip(rutas_destino, mascaras_destino, gateways):
+            configuraciones += f"ip route add {red_destino}/{mascara} via {gateway}\n"
+
+        # Ruta al script de Bash existente para enrutamiento
+        script_path = 'redes/bash/enrutamiento.sh'
+
+        # Leer el contenido del script de Bash
+        with open(script_path, 'r') as script_file:
+            script_content = script_file.read()
+
+        # Reemplazar marcadores de posición en el script de Bash con las configuraciones de enrutamiento
+        script_content = script_content.replace('{red_origen}', red_origen)
+        script_content = script_content.replace('{configuraciones}', configuraciones)
+
+        # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
+        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response['Content-Disposition'] = 'attachment; filename="enrutamiento.sh"'
+        return response
+    else:
+    	return render(request, 'redes/enrutamiento.html')
+
+def pingtester(request):
+    if request.method == 'POST':
+        # Recoge los datos del formulario
+        nombre_equipo = request.POST.get('nombre_equipo')
+        direccion_ip = request.POST.get('direccion_ip')
+        num_intentos = request.POST.get('num_intentos', 4)  # Valor por defecto: 4
+        historico = request.POST.get('historico')
+
+        # Ruta al script de Bash existente
+        script_path = 'redes/bash/pingtester.sh'
+
+        # Leer el contenido del script de Bash
+        with open(script_path, 'r') as script_file:
+            script_content = script_file.read()
+
+        # Configurar el script de Bash con los datos del formulario
+        script_content = script_content.replace('{direccion_ip}', direccion_ip)
+        script_content = script_content.replace('{num_intentos}', num_intentos)
+        script_content = script_content.replace('{historico}', historico)
+
+        # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
+        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response['Content-Disposition'] = 'attachment; filename="pingtester.sh"'
+        return response
+    else:
+        return render(request, 'redes/pingtester.html')

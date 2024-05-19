@@ -12,8 +12,20 @@
     <ul>
         <li><a href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
         <li><a href="{% url 'redes:dhcp' %}">DHCP</a></li>
-        <li><a href="{% url 'redes:dns' %}">DNS</a></li>
         <li><a href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+	<li><a href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+        <li><a href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+        <li><a href="{% url 'usuarios:modificar_usuario' %}">Modificacion de usuarios</a></li>        
+        <li><a href="{% url 'usuarios:eliminar_usuario' %}">Eliminacion de usuarios</a></li>
+        <li><a href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+        <li><a href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+	<li><a href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+        <li><a href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+        <li><a href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+        <li><a href="{% url 'copias:configuracion_backups' %}">Configuracion copias de seguridad locales</a></li>
+        <li><a href="{% url 'copias:programar_copia' %}">Programacion de copias de seguridad</a></li>
+        <li><a href="{% url 'copias:configuracion_nas' %}">Configuracion NAS</a></li>
+        <li><a href="{% url 'copias:subida_archivos_nas' %}">Configuracion NAS</a></li>
     </ul>
 </body>
 </html>

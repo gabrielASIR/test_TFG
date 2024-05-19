@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Tester</title>
+</head>
+<body>
+    <h1>Ping Tester</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre_equipo">Nombre del equipo:</label><br>
+        <input type="text" id="nombre_equipo" name="nombre_equipo"><br><br>
+
+        <label for="direccion_ip">Dirección IP:</label><br>
+        <input type="text" id="direccion_ip" name="direccion_ip"><br><br>
+
+        <label for="num_intentos">Número de intentos de ping:</label><br>
+        <input type="number" id="num_intentos" name="num_intentos" value="4" min="1" max="10"><br><br>
+	
+	<label for="historico">Ruta para histórico:</label><br>
+        <input type="text" id="historico" name="historico"><br><br>
+
+        <button type="submit">Realizar prueba de ping</button>
+    </form>
+</body>
+</html>
