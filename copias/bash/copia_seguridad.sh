@@ -1,5 +1,5 @@
 #!/bin/bash
-# Recogemos los argumentos pasados desde Django
+# Recogemos los parámetros
 nombre_backup="{nombre_backup}"
 ruta_origen="{ruta_origen}"
 ruta_destino="{ruta_destino}"
@@ -8,54 +8,74 @@ clave_encriptacion="{clave_encriptacion}"
 compresion="{compresion}"
 exclusiones="{exclusiones}"
 
-# Verificamos si algún campo está vacío y lo añadimos a los parámetros según corresponda
-comando_copia=""
-if [ -n "$nombre_backup" ]; then
-    comando_copia="$comando_copia --nombre-backup=\"$nombre_backup\""
-fi
-if [ -n "$ruta_origen" ]; then
-    comando_copia="$comando_copia --ruta-origen=\"$ruta_origen\""
-fi
-if [ -n "$ruta_destino" ]; then
-    comando_copia="$comando_copia --ruta-destino=\"$ruta_destino\""
-fi
-if [ -n "$metodo_copia" ]; then
-    comando_copia="$comando_copia --metodo-copia=\"$metodo_copia\""
-fi
-if [ -n "$clave_encriptacion" ]; then
-    comando_copia="$comando_copia --clave-encriptacion=\"$clave_encriptacion\""
-fi
-if [ -n "$compresion" ]; then
-    comando_copia="$comando_copia --compresion=\"$compresion\""
-fi
-if [ -n "$exclusiones" ]; then
-    comando_copia="$comando_copia --exclusiones=\"$exclusiones\""
+# Mostramos valores por pantalla
+echo "Nombre del backup: $nombre_backup"
+echo "Ruta de origen: $ruta_origen"
+echo "Ruta de destino: $ruta_destino"
+echo "Método de copia: $metodo_copia"
+echo "Clave de encriptación: $clave_encriptacion"
+echo "Compresión: $compresion"
+echo "Exclusiones: $exclusiones"
+
+# Confirmamos antes de proceder
+read -p "¿Desea proceder con la copia de seguridad usando los valores anteriores? (s/n): " confirmacion
+if [ "$confirmacion" != "s" ]
+then
+    echo "Operación cancelada"
 fi
 
 # Realizamos la copia de seguridad según el método seleccionado
-if [ "$metodo_copia" = "cp" ]; then
-    cp -r $comando_copia
-elif [ "$metodo_copia" = "rsync" ]; then
-    rsync -avz $comando_copia
-elif [ "$metodo_copia" = "tar" ]; then
-    tar -czf "$ruta_destino/$nombre_backup.tar.gz" $comando_copia
-else
-    echo "Método de copia no válido"
-    exit 1
+read -p "¿Desea proceder con la copia usando el método $metodo_copia? (s/n): " confirmacion
+if [ "$confirmacion" != "s" ]
+then
+    echo "Operación cancelada"
 fi
 
-# Añadimos las configuraciones faltantes
-# Si se especifica clave encriptamos el archivo
-if [ -n "$clave_encriptacion" ]; then
-    gpg --output "$ruta_destino/$nombre_backup.tar.gz.gpg" --encrypt --recipient "$clave_encriptacion" "$ruta_destino/$nombre_backup.tar.gz"
-    rm "$ruta_destino/$nombre_backup.tar.gz"
+case "$metodo_copia" in
+    cp)
+        cp -r "$ruta_origen" "$ruta_destino"
+        ;;
+    rsync)
+        rsync -av --exclude="$exclusiones" "$ruta_origen" "$ruta_destino"
+        ;;
+    tar)
+        tar -czf "$ruta_destino/$nombre_backup.tar.gz" "$ruta_origen"
+        ;;
+    *)
+        echo "Método de copia no válido"
+        exit 1
+        ;;
+esac
+
+# Encriptar si se especifica clave de encriptación
+if [ -n "$clave_encriptacion" ]
+then
+    read -p "¿Desea encriptar el archivo de backup? (s/n): " confirmacion
+    if [ "$confirmacion" = "s" ]
+    then
+        gpg --output "$ruta_destino/$nombre_backup.tar.gz.gpg" --encrypt --recipient "$clave_encriptacion" "$ruta_destino/$nombre_backup.tar.gz"
+        rm "$ruta_destino/$nombre_backup.tar.gz"
+    else
+        echo "Encriptación omitida"
+    fi
 fi
 
-# Si se especifica compresión, podemos comprimir el archivo de copia adicionalmente
-if [ "$compresion" = "gzip" ]; then
-    gzip "$ruta_destino/$nombre_backup.tar.gz"
-elif [ "$compresion" = "bzip2" ]; then
-    bzip2 "$ruta_destino/$nombre_backup.tar.gz"
+# Comprimir si se especifica compresión
+if [ "$compresion" != "none" ]; then
+    read -p "¿Desea comprimir el archivo de backup usando $compresion? (s/n): " confirmacion
+    if [ "$confirmacion" = "s" ]
+    then
+        case "$compresion" in
+            gzip)
+                gzip "$ruta_destino/$nombre_backup.tar.gz"
+                ;;
+            bzip2)
+                bzip2 "$ruta_destino/$nombre_backup.tar.gz"
+                ;;
+        esac
+    else
+        echo "Compresión omitida"
+    fi
 fi
 
 echo "Copia de seguridad \"$nombre_backup\" realizada correctamente."
