@@ -3,40 +3,51 @@ from django.http import HttpResponse
 
 def interfaces(request):
     if request.method == 'POST':
-        # Recoge los datos del formulario
-        nombre = request.POST.get('nombre')
-        direccion_ip = request.POST.get('direccion_ip')
-        mascara_subred = request.POST.get('mascara_subred')
-        puerta_enlace = request.POST.get('puerta_enlace')
-        dns_primario = request.POST.get('dns_primario')
-        dns_secundario = request.POST.get('dns_secundario')
-        tipo_conexion = request.POST.get('tipo_conexion')
-        estado = request.POST.get('estado')
+        num_interfaces = request.POST.get('num_interfaces')
 
-        # Ruta al script de Bash existente
-        script_path = 'redes/bash/interfaces.sh'
+        # Validación de campos
+        if not num_interfaces or not num_interfaces.isdigit():
+            return render(request, 'redes/interfaces.html')
 
-        # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        num_interfaces = int(num_interfaces)
 
-        # Configuración de la interfaz de red
-        script_content = script_content.replace('{nombre}', nombre)
-        script_content = script_content.replace('{direccion_ip}', direccion_ip)
-        script_content = script_content.replace('{mascara_subred}', mascara_subred)
-        script_content = script_content.replace('{puerta_enlace}', puerta_enlace)
-        script_content = script_content.replace('{dns_primario}', dns_primario)
-        script_content = script_content.replace('{dns_secundario}', dns_secundario)
-        script_content = script_content.replace('{tipo_conexion}', tipo_conexion)
-        script_content = script_content.replace('{estado}', estado)
+        for i in range(1, num_interfaces + 1):
+            nombre = request.POST.get(f'nombre_{i}')
+            direccion_ip = request.POST.get(f'direccion_ip_{i}')
+            mascara_subred = request.POST.get(f'mascara_subred_{i}')
+            puerta_enlace = request.POST.get(f'puerta_enlace_{i}')
+            dns_primario = request.POST.get(f'dns_primario_{i}')
+            dns_secundario = request.POST.get(f'dns_secundario_{i}')
+            tipo_conexion = request.POST.get(f'tipo_conexion_{i}')
+            estado = request.POST.get(f'estado_{i}')
 
-        # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="interfaces.sh"'
-        return response
+            # Validación de campos
+            if not nombre or not direccion_ip or not mascara_subred or not puerta_enlace:
+                return render(request, 'redes/interfaces.html')
+
+            # Ruta al script de Bash existente
+            script_path = 'redes/bash/interfaces.sh'
+
+            # Funcion para leer el contenido del script de Bash
+            with open(script_path, 'r') as script_file:
+                script_content = script_file.read()
+
+            # Envío de datos al script bash
+            script_content = script_content.replace('{nombre}', nombre)
+            script_content = script_content.replace('{direccion_ip}', direccion_ip)
+            script_content = script_content.replace('{mascara_subred}', mascara_subred)
+            script_content = script_content.replace('{puerta_enlace}', puerta_enlace)
+            script_content = script_content.replace('{dns_primario}', dns_primario)
+            script_content = script_content.replace('{dns_secundario}', dns_secundario)
+            script_content = script_content.replace('{tipo_conexion}', tipo_conexion)
+            script_content = script_content.replace('{estado}', estado)
+
+            # Funcion para devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
+            response = HttpResponse(script_content, content_type='application/x-shellscript')
+            response['Content-Disposition'] = f'attachment; filename="interfaces_{i}.sh"'
+            return response
     else:
         return render(request, 'redes/interfaces.html')
-
 
 def dhcp(request):
     if request.method == 'POST':
