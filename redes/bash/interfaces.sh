@@ -1,46 +1,52 @@
 #!/bin/bash
-# Recoge los argumentos pasados desde Django
-nom="{nombre}"
-dir_ip="{direccion_ip}"
-mas_sub="{mascara_subred}"
-pu_en="{puerta_enlace}"
-dns_p="{dns_primario}"
-dns_s="{dns_secundario}"
-est="{estado}"
+# Recogemos los argumentos pasados desde Django
+nombre="{nombre}"
+direccion_ip="{direccion_ip}"
+mascara_subred="{mascara_subred}"
+puerta_enlace="{puerta_enlace}"
+dns_primario="{dns_primario}"
+dns_secundario="{dns_secundario}"
+tipo_conexion="{tipo_conexion}"
+estado="{estado}"
 
-echo "Nombre: $nom"
-echo "Direccion IP: $dir_ip"
-echo "Mascara: $mas_sub"
-echo "Puerta enlace: $pu_en"
-echo "DNS Primario: $dns_p"
-echo "DNS Secundario: $dns_s"
-echo "Estado: $est"
+echo "Nombre: $nombre"
+echo "Dirección IP: $direccion_ip"
+echo "Máscara: $mascara_subred"
+echo "Puerta de enlace: $puerta_enlace"
+echo "DNS Primario: $dns_primario"
+echo "DNS Secundario: $dns_secundario"
+echo "Tipo de conexión: $tipo_conexion"
+echo "Estado: $estado"
 
-# Pregunta al usuario si desea aplicar las configuraciones
+# Preguntamos al usuario si desea aplicar las configuraciones
 read -p "¿Desea aplicar las configuraciones? (S/N): " confirmacion
 
-if [ "$confirmacion" = "S" ]; then
+if [ "$confirmacion" = "S" ]
+then
     # Configuración de la interfaz de red
-echo "network:
+    cat <<EOF >"/etc/netplan/00-installer-config.yaml"
+network:
   ethernets:
-    $nom:
-      addresses: [$dir_ip/$mas_sub]
+    $nombre:
+      addresses: [$direccion_ip/$mascara_subred]
       routes:
         - to: default
-          via: $pu_en
+          via: $puerta_enlace
       nameservers:
-        addresses: [$dns_p, $dns_s]
+        addresses: [$dns_primario, $dns_secundario]
   version: 2
-" > /etc/netplan/00-installer-config.yaml
+EOF
 
-    # Aplicar la configuración de Netplan
+    # Aplicamos la configuración de Netplan
     netplan apply
 
-    # Verifica el estado y activa o desactiva la interfaz según corresponda
-    if [ "$est" = "A" ]; then
-        ip link set $nom up
-    elif [ "$est" = "I" ]; then
-        ip link set $nom down
+    # Verificamos el estado y activa o desactiva la interfaz según corresponda
+    if [ "$estado" = "A" ]
+    then
+        ip link set $nombre up
+    elif [ "$estado" = "I" ]
+    then
+        ip link set $nombre down
     else
         echo "Estado desconocido. No se realizó ninguna acción."
     fi
