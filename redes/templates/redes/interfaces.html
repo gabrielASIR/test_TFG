@@ -12,22 +12,22 @@
                     <fieldset>
                         <legend>Interfaz ${numInterfaces}</legend>
                         <label for="nombre_${numInterfaces}">Nombre de la interfaz:</label><br>
-                        <input type="text" id="nombre_${numInterfaces}" name="nombre_${numInterfaces}"><br><br>
+                        <input type="text" id="nombre_${numInterfaces}" name="nombre_${numInterfaces}" placeholder="Ej: enp0s8, eth1"><br><br>
                         
                         <label for="direccion_ip_${numInterfaces}">Dirección IP:</label><br>
-                        <input type="text" id="direccion_ip_${numInterfaces}" name="direccion_ip_${numInterfaces}"><br><br>
+                        <input type="text" id="direccion_ip_${numInterfaces}" name="direccion_ip_${numInterfaces}" placeholder="Ej: 192.168.2.0 / 172.16.1.1"><br><br>
                         
                         <label for="mascara_subred_${numInterfaces}">Máscara de subred:</label><br>
-                        <input type="text" id="mascara_subred_${numInterfaces}" name="mascara_subred_${numInterfaces}"><br><br>
+                        <input type="text" id="mascara_subred_${numInterfaces}" name="mascara_subred_${numInterfaces}" placeholder="Formato corto: 24 / 16 / 8"placeholder="Formato corto: 24 / 16 / 8"><br><br>
                         
                         <label for="puerta_enlace_${numInterfaces}">Puerta de enlace predeterminada:</label><br>
-                        <input type="text" id="puerta_enlace_${numInterfaces}" name="puerta_enlace_${numInterfaces}"><br><br>
+                        <input type="text" id="puerta_enlace_${numInterfaces}" name="puerta_enlace_${numInterfaces}" placeholder="Direccion router. Ej: 10.10.10.1"><br><br>
                         
                         <label for="dns_primario_${numInterfaces}">DNS primario:</label><br>
-                        <input type="text" id="dns_primario_${numInterfaces}" name="dns_primario_${numInterfaces}"><br><br>
+                        <input type="text" id="dns_primario_${numInterfaces}" name="dns_primario_${numInterfaces}" placeholder="Servidor DNS. Ej: 8.8.4.4"><br><br>
                         
                         <label for="dns_secundario_${numInterfaces}">DNS secundario:</label><br>
-                        <input type="text" id="dns_secundario_${numInterfaces}" name="dns_secundario_${numInterfaces}"><br><br>
+                        <input type="text" id="dns_secundario_${numInterfaces}" name="dns_secundario_${numInterfaces}" placeholder="Indicar en caso de más de un servidor DNS"><br><br>
                         
                         <label for="tipo_conexion_${numInterfaces}">Tipo de conexión:</label><br>
                         <select id="tipo_conexion_${numInterfaces}" name="tipo_conexion_${numInterfaces}">
@@ -56,6 +56,11 @@
 </head>
 <body>
     <h1>Configuración de Interfaces de Red</h1>
+ 
+   {% if mensaje_error %}
+	<p>{{ mensaje_error }}</p>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
         <label for="num_interfaces">Número de Interfaces:</label><br>
@@ -66,22 +71,22 @@
                 <fieldset>
                     <legend>Interfaz 1</legend>
                     <label for="nombre_1">Nombre de la interfaz:</label><br>
-                    <input type="text" id="nombre_1" name="nombre_1"><br><br>
+                    <input type="text" id="nombre_1" name="nombre_1" placeholder="Ej: enp0s3 / eth0"><br><br>
                     
                     <label for="direccion_ip_1">Dirección IP:</label><br>
-                    <input type="text" id="direccion_ip_1" name="direccion_ip_1"><br><br>
+                    <input type="text" id="direccion_ip_1" name="direccion_ip_1" placeholder="Ej: 192.1.0.0 / 10.1.100.0"><br><br>
                     
                     <label for="mascara_subred_1">Máscara de subred:</label><br>
-                    <input type="text" id="mascara_subred_1" name="mascara_subred_1"><br><br>
+                    <input type="text" id="mascara_subred_1" name="mascara_subred_1" placeholder="En formato acortado: 24 / 16 / 8"><br><br>
                     
                     <label for="puerta_enlace_1">Puerta de enlace predeterminada:</label><br>
-                    <input type="text" id="puerta_enlace_1" name="puerta_enlace_1"><br><br>
+                    <input type="text" id="puerta_enlace_1" name="puerta_enlace_1" placeholder="Formato igual que direccion_ip. Ej: 192.168.1.254"><br><br>
                     
                     <label for="dns_primario_1">DNS primario:</label><br>
-                    <input type="text" id="dns_primario_1" name="dns_primario_1"><br><br>
+                    <input type="text" id="dns_primario_1" name="dns_primario_1" placeholder="Formato igual que direccion_ip y puerta_enlace. Ej: 8.8.8.8"><br><br>
                     
                     <label for="dns_secundario_1">DNS secundario:</label><br>
-                    <input type="text" id="dns_secundario_1" name="dns_secundario_1"><br><br>
+                    <input type="text" id="dns_secundario_1" name="dns_secundario_1" placeholder="Indicar en caso de que haya más de un DNS"><br><br>
                     
                     <label for="tipo_conexion_1">Tipo de conexión:</label><br>
                     <select id="tipo_conexion_1" name="tipo_conexion_1">

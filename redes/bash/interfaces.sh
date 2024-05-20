@@ -9,6 +9,7 @@ dns_secundario="{dns_secundario}"
 tipo_conexion="{tipo_conexion}"
 estado="{estado}"
 
+echo "CONFIGURACION DE INTERFAZ"
 echo "Nombre: $nombre"
 echo "Dirección IP: $direccion_ip"
 echo "Máscara: $mascara_subred"
@@ -17,6 +18,7 @@ echo "DNS Primario: $dns_primario"
 echo "DNS Secundario: $dns_secundario"
 echo "Tipo de conexión: $tipo_conexion"
 echo "Estado: $estado"
+echo ""
 
 # Preguntamos al usuario si desea aplicar las configuraciones
 read -p "¿Desea aplicar las configuraciones? (S/N): " confirmacion
@@ -41,15 +43,17 @@ EOF
     netplan apply
 
     # Verificamos el estado y activa o desactiva la interfaz según corresponda
-    if [ "$estado" = "A" ]
-    then
-        ip link set $nombre up
-    elif [ "$estado" = "I" ]
-    then
-        ip link set $nombre down
-    else
-        echo "Estado desconocido. No se realizó ninguna acción."
-    fi
+    case "$estado" in
+    	"A")
+        	ip link set "$nombre" up
+        	;;
+    	"I")
+        	ip link set "$nombre" down
+        	;;
+    	*)
+        	echo "Estado desconocido. No se realizó ninguna acción."
+        	;;
+     esac
 
     echo "Configuraciones aplicadas correctamente."
 else
