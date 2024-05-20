@@ -4,40 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de Interfaces de Red</title>
+    <script>
+        function agregarInterfaz() {
+            const numInterfaces = document.querySelectorAll('.interfaz').length + 1;
+            const template = `
+                <div class="interfaz">
+                    <fieldset>
+                        <legend>Interfaz ${numInterfaces}</legend>
+                        <label for="nombre_${numInterfaces}">Nombre de la interfaz:</label><br>
+                        <input type="text" id="nombre_${numInterfaces}" name="nombre_${numInterfaces}"><br><br>
+                        
+                        <label for="direccion_ip_${numInterfaces}">Dirección IP:</label><br>
+                        <input type="text" id="direccion_ip_${numInterfaces}" name="direccion_ip_${numInterfaces}"><br><br>
+                        
+                        <label for="mascara_subred_${numInterfaces}">Máscara de subred:</label><br>
+                        <input type="text" id="mascara_subred_${numInterfaces}" name="mascara_subred_${numInterfaces}"><br><br>
+                        
+                        <label for="puerta_enlace_${numInterfaces}">Puerta de enlace predeterminada:</label><br>
+                        <input type="text" id="puerta_enlace_${numInterfaces}" name="puerta_enlace_${numInterfaces}"><br><br>
+                        
+                        <label for="dns_primario_${numInterfaces}">DNS primario:</label><br>
+                        <input type="text" id="dns_primario_${numInterfaces}" name="dns_primario_${numInterfaces}"><br><br>
+                        
+                        <label for="dns_secundario_${numInterfaces}">DNS secundario:</label><br>
+                        <input type="text" id="dns_secundario_${numInterfaces}" name="dns_secundario_${numInterfaces}"><br><br>
+                        
+                        <label for="tipo_conexion_${numInterfaces}">Tipo de conexión:</label><br>
+                        <select id="tipo_conexion_${numInterfaces}" name="tipo_conexion_${numInterfaces}">
+                            <option value="Ethernet">Ethernet</option>
+                            <option value="Wi-Fi">Wi-Fi</option>
+                        </select><br><br>
+                        
+                        <label for="estado_${numInterfaces}">Estado de la interfaz:</label><br>
+                        <input type="radio" id="activo_${numInterfaces}" name="estado_${numInterfaces}" value="A">
+                        <label for="activo_${numInterfaces}">Activo</label><br>
+                        <input type="radio" id="inactivo_${numInterfaces}" name="estado_${numInterfaces}" value="I">
+                        <label for="inactivo_${numInterfaces}">Inactivo</label><br><br>
+                        
+                        <button type="button" onclick="eliminarInterfaz(this)">Eliminar Interfaz</button>
+                    </fieldset>
+                    <br>
+                </div>
+            `;
+            document.getElementById('interfaces').insertAdjacentHTML('beforeend', template);
+        }
+
+        function eliminarInterfaz(button) {
+            button.closest('.interfaz').remove();
+        }
+    </script>
 </head>
 <body>
     <h1>Configuración de Interfaces de Red</h1>
     <form method="post">
         {% csrf_token %}
-        <label for="nombre">Nombre de la interfaz:</label><br>
-        <input type="text" id="nombre" name="nombre"><br><br>
-        
-        <label for="direccion_ip">Dirección IP:</label><br>
-        <input type="text" id="direccion_ip" name="direccion_ip"><br><br>
-        
-        <label for="mascara_subred">Máscara de subred:</label><br>
-        <input type="text" id="mascara_subred" name="mascara_subred"><br><br>
-        
-        <label for="puerta_enlace">Puerta de enlace predeterminada:</label><br>
-        <input type="text" id="puerta_enlace" name="puerta_enlace"><br><br>
-        
-        <label for="dns_primario">DNS primario:</label><br>
-        <input type="text" id="dns_primario" name="dns_primario"><br><br>
-        
-        <label for="dns_secundario">DNS secundario:</label><br>
-        <input type="text" id="dns_secundario" name="dns_secundario"><br><br>
-        
-        <label for="tipo_conexion">Tipo de conexión:</label><br>
-        <select id="tipo_conexion" name="tipo_conexion">
-            <option value="Ethernet">Ethernet</option>
-            <option value="Wi-Fi">Wi-Fi</option>
-        </select><br><br>
-        
-        <label for="estado">Estado de la interfaz:</label><br>
-        <input type="radio" id="activo" name="estado" value="A">
-        <label for="activo">Activo</label><br>
-        <input type="radio" id="inactivo" name="estado" value="I">
-        <label for="inactivo">Inactivo</label><br><br>
+        <label for="num_interfaces">Número de Interfaces:</label><br>
+        <input type="number" id="num_interfaces" name="num_interfaces" min="1" value="1" required><br><br>
+
+        <div id="interfaces">
+            <div class="interfaz">
+                <fieldset>
+                    <legend>Interfaz 1</legend>
+                    <label for="nombre_1">Nombre de la interfaz:</label><br>
+                    <input type="text" id="nombre_1" name="nombre_1"><br><br>
+                    
+                    <label for="direccion_ip_1">Dirección IP:</label><br>
+                    <input type="text" id="direccion_ip_1" name="direccion_ip_1"><br><br>
+                    
+                    <label for="mascara_subred_1">Máscara de subred:</label><br>
+                    <input type="text" id="mascara_subred_1" name="mascara_subred_1"><br><br>
+                    
+                    <label for="puerta_enlace_1">Puerta de enlace predeterminada:</label><br>
+                    <input type="text" id="puerta_enlace_1" name="puerta_enlace_1"><br><br>
+                    
+                    <label for="dns_primario_1">DNS primario:</label><br>
+                    <input type="text" id="dns_primario_1" name="dns_primario_1"><br><br>
+                    
+                    <label for="dns_secundario_1">DNS secundario:</label><br>
+                    <input type="text" id="dns_secundario_1" name="dns_secundario_1"><br><br>
+                    
+                    <label for="tipo_conexion_1">Tipo de conexión:</label><br>
+                    <select id="tipo_conexion_1" name="tipo_conexion_1">
+                        <option value="Ethernet">Ethernet</option>
+                        <option value="Wi-Fi">Wi-Fi</option>
+                    </select><br><br>
+                    
+                    <label for="estado_1">Estado de la interfaz:</label><br>
+                    <input type="radio" id="activo_1" name="estado_1" value="A">
+                    <label for="activo_1">Activo</label><br>
+                    <input type="radio" id="inactivo_1" name="estado_1" value="I">
+                    <label for="inactivo_1">Inactivo</label><br><br>
+                    
+                    <button type="button" onclick="eliminarInterfaz(this)">Eliminar Interfaz</button>
+                </fieldset>
+                <br>
+            </div>
+        </div>
+
+        <button type="button" onclick="agregarInterfaz()">Agregar Interfaz</button><br><br>
         
         <button type="submit">Guardar Configuración</button>
     </form>
