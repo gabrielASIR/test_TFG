@@ -215,33 +215,69 @@ def reserva_ip(request):
 
 def enrutamiento(request):
     if request.method == 'POST':
+        num_enrutamientos = request.POST.get('num_enrutamientos')
+
+        # Validación de campos
+        if not num_enrutamientos or not num_enrutamientos.isdigit():
+            return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'Número de configuraciones inválido.'})
+
+        num_enrutamientos = int(num_enrutamientos)
+        all_scripts = []
+
         red_origen = request.POST.get('red_origen')
-        rutas_destino = request.POST.getlist('red_destino[]')
-        mascaras_destino = request.POST.getlist('mascara_destino[]')
-        gateways = request.POST.getlist('gateway[]')
 
-        # Generar configuraciones de enrutamiento para cada ruta
-        configuraciones = ''
-        for red_destino, mascara, gateway in zip(rutas_destino, mascaras_destino, gateways):
-            configuraciones += f"ip route add {red_destino}/{mascara} via {gateway}\n"
+        # Validación de campos
+        if not red_origen:
+            return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'La red de origen es obligatoria'})
 
-        # Ruta al script de Bash existente para enrutamiento
-        script_path = 'redes/bash/enrutamiento.sh'
+        try:
+            validador_ipv4(red_origen)
+        except ValidationError:
+            return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'Introduce una dirección IPv4 válida para la red de origen.'})
 
-        # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        for i in range(1, num_enrutamientos + 1):
+            red_destino = request.POST.get(f'red_destino_{i}')
+            mascara = request.POST.get(f'mascara_destino_{i}')
+            gateway = request.POST.get(f'gateway_{i}')
 
-        # Reemplazar marcadores de posición en el script de Bash con las configuraciones de enrutamiento
-        script_content = script_content.replace('{red_origen}', red_origen)
-        script_content = script_content.replace('{configuraciones}', configuraciones)
+            if not red_destino or not mascara or not gateway:
+                return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'Todos los campos de cada ruta son obligatorios.'})
+
+            try:
+                validador_ipv4(red_destino)
+                validador_ipv4(gateway)
+            except ValidationError:
+                return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'Introduce direcciones IPv4 válidas para la red de destino y el gateway.'})
+
+            if not mascara.isdigit() or not 0 <= int(mascara) <= 32:
+                return render(request, 'redes/enrutamiento.html', {'mensaje_error': 'La máscara de subred debe ser un número entre 0 y 32.'})
+
+           # Ruta al script de Bash existente
+            ruta_script = 'redes/bash/enrutamiento.sh'
+
+            # Función para leer el contenido del script de Bash
+            with open(ruta_script, 'r') as archivo_script:
+                contenido_script = archivo_script.read()
+
+            # Reemplazar las variables de marcador de posición en la plantilla del script
+            contenido_script = contenido_script.replace('{red_origen}', red_origen)
+            contenido_script = contenido_script.replace('{red_destino}', red_destino)
+            contenido_script = contenido_script.replace('{mascara}', mascara)
+            contenido_script = contenido_script.replace('{gateway}', gateway)
+
+            # Agregar el script modificado a la lista de scripts
+            all_scripts.append(contenido_script)
+
+        # Concatenar todos los scripts en uno solo
+        script_completo = "\n".join(all_scripts)
 
         # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="enrutamiento.sh"'
-        return response
+        respuesta = HttpResponse(script_completo, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="enrutamiento.sh"'
+        return respuesta
+
     else:
-    	return render(request, 'redes/enrutamiento.html')
+        return render(request, 'redes/enrutamiento.html', {'num_enrutamientos': 1})
 
 def pingtester(request):
     if request.method == 'POST':
@@ -251,21 +287,45 @@ def pingtester(request):
         num_intentos = request.POST.get('num_intentos', 4)  # Valor por defecto: 4
         historico = request.POST.get('historico')
 
+        # Validación de campos
+        if not nombre_equipo:
+            return render(request, 'redes/pingtester.html', {'mensaje_error': 'El nombre del equipo es obligatorio.'})
+        if not direccion_ip:
+            return render(request, 'redes/pingtester.html', {'mensaje_error': 'La dirección IP es obligatoria.'})
+
+        try:
+            validador_ipv4(direccion_ip)
+        except ValidationError:
+            return render(request, 'redes/pingtester.html', {'mensaje_error': 'Introduce una dirección IPv4 válida para la dirección IP.'})
+
+        # Validación de num_intentos
+        if num_intentos:
+            try:
+                num_intentos = int(num_intentos)
+                if num_intentos <= 0:
+                    raise ValidationError("El número de intentos debe ser mayor que cero.")
+            except ValueError:
+                return render(request, 'redes/pingtester.html', {'mensaje_error': 'El número de intentos debe ser un número entero válido.'})
+
+        # Si no se especifica el directorio de historico, usar el directorio home
+        if not historico:
+            historico = "$HOME"
+
         # Ruta al script de Bash existente
-        script_path = 'redes/bash/pingtester.sh'
+        ruta_script = 'redes/bash/pingtester.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Configurar el script de Bash con los datos del formulario
-        script_content = script_content.replace('{direccion_ip}', direccion_ip)
-        script_content = script_content.replace('{num_intentos}', num_intentos)
-        script_content = script_content.replace('{historico}', historico)
+        contenido_script = contenido_script.replace('{direccion_ip}', direccion_ip)
+        contenido_script = contenido_script.replace('{num_intentos}', str(num_intentos))
+        contenido_script = contenido_script.replace('{historico}', historico)
 
         # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="pingtester.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="pingtester.sh"'
+        return respuesta
     else:
         return render(request, 'redes/pingtester.html')

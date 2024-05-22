@@ -37,23 +37,25 @@ echo "Shell: $shell"
 read -p "¿Desea crear el usuario? (S/N): " confirmacion
 
 # Si la confirmación es "S", montar el comando con los datos introducidos
-if [ "$confirmacion" = "S" ]; then
+if [ "$confirmacion" = "S" ]
+then
     # Montaje de comando
     comando_useradd="useradd"
-    [ -n "$crear_home" ] && comando_useradd+=" $crear_home"
-    [ -n "$copiar_skel" ] && comando_useradd+=" $copiar_skel"
+    [ "$crear_home" = "yes" ] && comando_useradd+=" -m -d $directorio_home"
+    [ "$copiar_skel" = "yes" ] && comando_useradd+=" -k $skel"
     comando_useradd+=" -s $shell -c '$nombre_completo'"
     [ -n "$expire" ] && comando_useradd+=" -e $expire"
     [ -n "$uid" ] && comando_useradd+=" -u $uid"
     [ -n "$gid" ] && comando_useradd+=" -g $gid"
     [ -n "$inactive" ] && comando_useradd+=" -f $inactive"
     comando_useradd+=" $nombre_usuario"
-    
+
     # Ejecución del comando completo
     $comando_useradd
 
     # Establecer contraseña si se proporcionó
-    if [ -n "$contrasena" ]; then
+    if [ -n "$contrasena" ]
+then
         echo "$nombre_usuario:$contrasena" | chpasswd
     fi
 

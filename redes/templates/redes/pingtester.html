@@ -7,19 +7,24 @@
 </head>
 <body>
     <h1>Ping Tester</h1>
+
+    {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
         <label for="nombre_equipo">Nombre del equipo:</label><br>
-        <input type="text" id="nombre_equipo" name="nombre_equipo"><br><br>
+        <input type="text" id="nombre_equipo" name="nombre_equipo" placeholder="Nombre de la maquina destino"><br><br>
 
         <label for="direccion_ip">Dirección IP:</label><br>
-        <input type="text" id="direccion_ip" name="direccion_ip"><br><br>
+        <input type="text" id="direccion_ip" name="direccion_ip" placeholder="Ej: 192.168.100.254"><br><br>
 
         <label for="num_intentos">Número de intentos de ping:</label><br>
-        <input type="number" id="num_intentos" name="num_intentos" value="4" min="1" max="10"><br><br>
+        <input type="number" id="num_intentos" name="num_intentos" value="4" min="1" max="10" placeholder="Numero del 1 al 10"><br><br>
 	
 	<label for="historico">Ruta para histórico:</label><br>
-        <input type="text" id="historico" name="historico"><br><br>
+        <input type="text" id="historico" name="historico" placeholder="Ej: /home/gabriel"><br><br>
 
         <button type="submit">Realizar prueba de ping</button>
     </form>

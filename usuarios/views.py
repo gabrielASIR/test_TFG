@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.validators import RegexValidator
+from django.forms import ValidationError
+import os
 
 def crear_usuario(request):
     if request.method == 'POST':
-        # Recoge los datos del formulario
+        # Recoger datos del formulario
         nombre_usuario = request.POST.get('nombre_usuario')
         contrasena = request.POST.get('contrasena')
         grupo_principal = request.POST.get('grupo_principal')
@@ -11,63 +14,74 @@ def crear_usuario(request):
         nombre_completo = request.POST.get('nombre_completo')
         directorios = request.POST.get('directorios')
         skel = request.POST.get('skel')
-        directorio_home = request.POST.get('home')
+        directorio_principal = request.POST.get('home')
         shell = request.POST.get('shell')
         expire = request.POST.get('expire')
         uid = request.POST.get('uid')
         gid = request.POST.get('gid')
-        inactive = request.POST.get('inactive')
-        crear_home = request.POST.get('create_home')
-        copiar_skel = request.POST.get('copy_skel')
+        inactivo = request.POST.get('inactivo')
+        crear_directorio_principal = request.POST.get('crear_directorio_principal')
+        copiar_skel = request.POST.get('copiar_skel')
+
+        # Validación de campos obligatorios
+        if not nombre_usuario or not contrasena or not grupo_principal or not shell:
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'Los campos nombre de usuario, contraseña, grupo principal y shell son obligatorios.'})
+
+        # Validación de formato de campos
+        # Puedes agregar más validaciones según sea necesario
+
+        # Validación de contraseña
+        if len(contrasena) < 6:
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'La contraseña debe tener al menos 6 caracteres.'})
+
+        # Validación de shell
+        shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
+        if shell not in shells_validos:
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
 
         # Ruta al script de Bash para crear usuarios
-        script_path = 'usuarios/bash/crear_usuario.sh'
+        ruta_script = 'usuarios/bash/crear_usuario.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Reemplazar los marcadores de posición con los datos del formulario
-        if nombre_usuario is not None:
-            script_content = script_content.replace('{nombre_usuario}', nombre_usuario)
-        if contrasena is not None:
-            script_content = script_content.replace('{contrasena}', contrasena)
-        if grupo_principal is not None:
-            script_content = script_content.replace('{grupo_principal}', grupo_principal)
-        if otros_grupos is not None:
-            script_content = script_content.replace('{otros_grupos}', otros_grupos)
-        if nombre_completo is not None:
-            script_content = script_content.replace('{nombre_completo}', nombre_completo)
-        if directorios is not None:
-            script_content = script_content.replace('{directorios}', directorios)
-        if skel is not None:
-            script_content = script_content.replace('{skel}', skel)
-        if directorio_home is not None:
-            script_content = script_content.replace('{directorio_home}', directorio_home)
-        if shell is not None:
-            script_content = script_content.replace('{shell}', shell)
-        if expire is not None:
-            script_content = script_content.replace('{expire}', expire)
-        if uid is not None:
-            script_content = script_content.replace('{uid}', uid)
-        if gid is not None:
-            script_content = script_content.replace('{gid}', gid)
-        if inactive is not None:
-            script_content = script_content.replace('{inactive}', inactive)
-        if crear_home == 'yes':
-            script_content = script_content.replace('{crear_home}', '-m')
+        contenido_script = contenido_script.replace('{nombre_usuario}', nombre_usuario)
+        contenido_script = contenido_script.replace('{contrasena}', contrasena)
+        contenido_script = contenido_script.replace('{grupo_principal}', grupo_principal)
+        contenido_script = contenido_script.replace('{shell}', shell)
+        if otros_grupos:
+            contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos)
+        if nombre_completo:
+            contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo)
+        if directorios:
+            contenido_script = contenido_script.replace('{directorios}', directorios)
+        if skel:
+            contenido_script = contenido_script.replace('{skel}', skel)
+        if directorio_principal:
+            contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
+        if expire:
+            contenido_script = contenido_script.replace('{expire}', expire)
+        if uid:
+            contenido_script = contenido_script.replace('{uid}', uid)
+        if gid:
+            contenido_script = contenido_script.replace('{gid}', gid)
+        if inactivo:
+            contenido_script = contenido_script.replace('{inactivo}', inactivo)
+        if crear_directorio_principal == 'yes':
+            contenido_script = contenido_script.replace('{crear_directorio_principal}', '-m')
         else:
-            script_content = script_content.replace('{crear_home}', '')
-
+            contenido_script = contenido_script.replace('{crear_directorio_principal}', '')
         if copiar_skel == 'yes':
-            script_content = script_content.replace('{copiar_skel}', '-k {skel}')
+            contenido_script = contenido_script.replace('{copiar_skel}', '-k {skel}')
         else:
-            script_content = script_content.replace('{copiar_skel}', '')
+            contenido_script = contenido_script.replace('{copiar_skel}', '')
 
         # Devolver el script de Bash como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="crear_usuario.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="crear_usuario.sh"'
+        return respuesta
     else:
         return render(request, 'usuarios/crear_usuario.html')
 

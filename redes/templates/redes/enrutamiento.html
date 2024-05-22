@@ -4,23 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de Enrutamiento</title>
+    <script>
+        function agregarRuta() {
+            const numRutas = document.querySelectorAll('.ruta').length + 1;
+            const template = `
+                <div class="ruta">
+                    <fieldset>
+                        <legend>Ruta ${numRutas}</legend>
+                        <label for="red_destino_${numRutas}">Red Destino:</label><br>
+                        <input type="text" id="red_destino_${numRutas}" name="red_destino_${numRutas}" placeholder="Ej: 192.168.1.0 / 172.16.0.0"><br><br>
+                        
+                        <label for="gateway_${numRutas}">Gateway:</label><br>
+                        <input type="text" id="gateway_${numRutas}" name="gateway_${numRutas}" placeholder="Ej: 192.168.1.1"><br><br>
+                        
+                        <label for="mascara_destino_${numRutas}">Máscara:</label><br>
+                        <input type="text" id="mascara_destino_${numRutas}" name="mascara_destino_${numRutas}" placeholder="Formato corto: 24 / 16 / 8"><br><br>
+                        
+                        <button type="button" onclick="eliminarRuta(this)">Eliminar Ruta</button>
+                    </fieldset>
+                    <br>
+                </div>
+            `;
+            document.getElementById('rutas').insertAdjacentHTML('beforeend', template);
+        }
+
+        function eliminarRuta(button) {
+            button.closest('.ruta').remove();
+        }
+    </script>
 </head>
 <body>
     <h1>Configuración de Enrutamiento entre Redes</h1>
+    
+    {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
+        <label for="num_enrutamientos">Número de Enrutamientos:</label><br>
+        <input type="number" id="num_enrutamientos" name="num_enrutamientos" min="1" value="1" required><br><br>
+
         <label for="red_origen">Red Origen:</label><br>
-        <input type="text" id="red_origen" name="red_origen"><br><br>
+        <input type="text" id="red_origen" name="red_origen" placeholder="Ej: 192.168.0.0"><br><br>
 
         <div id="rutas">
             <div class="ruta">
-                <label for="red_destino">Red Destino:</label><br>
-                <input type="text" name="red_destino[]"><br><br>
-                <label for="gateway">Gateway:</label><br>
-                <input type="text" name="gateway[]"><br><br>
-		<label for="mascara_destino">Máscara:</label><br>
-                <input type="text" name="mascara_destino[]"><br><br>
-                <button type="button" onclick="eliminarRuta(this)">Eliminar</button>
+                <fieldset>
+                    <legend>Ruta 1</legend>
+                    <label for="red_destino_1">Red Destino:</label><br>
+                    <input type="text" id="red_destino_1" name="red_destino_1" placeholder="Ej: 192.168.1.0 / 172.16.0.0"><br><br>
+                    
+                    <label for="gateway_1">Gateway:</label><br>
+                    <input type="text" id="gateway_1" name="gateway_1" placeholder="Ej: 192.168.1.1"><br><br>
+                    
+                    <label for="mascara_destino_1">Máscara:</label><br>
+                    <input type="text" id="mascara_destino_1" name="mascara_destino_1" placeholder="Formato corto: 24 / 16 / 8"><br><br>
+                    
+                    <button type="button" onclick="eliminarRuta(this)">Eliminar Ruta</button>
+                </fieldset>
+                <br>
             </div>
         </div>
 
@@ -28,27 +71,5 @@
 
         <button type="submit">Guardar Configuración de Enrutamiento</button>
     </form>
-
-    <script>
-        function agregarRuta() {
-            var contenedor = document.getElementById("rutas");
-            var nuevaRuta = document.createElement("div");
-            nuevaRuta.className = "ruta";
-            nuevaRuta.innerHTML = `
-                <label for="red_destino">Red Destino:</label><br>
-                <input type="text" name="red_destino[]"><br><br>
-                <label for="gateway">Gateway:</label><br>
-                <input type="text" name="gateway[]"><br><br>
-		<label for="mascara_destino">Máscara:</label><br>
-                <input type="text" name="mascara_destino[]"><br><br>
-                <button type="button" onclick="eliminarRuta(this)">Eliminar</button>`;
-            contenedor.appendChild(nuevaRuta);
-        }
-
-        function eliminarRuta(boton) {
-            var ruta = boton.parentNode;
-            ruta.parentNode.removeChild(ruta);
-        }
-    </script>
 </body>
 </html>
