@@ -120,18 +120,22 @@ def crear_usuarios_secuenciales(request):
         if inicio > fin:
             return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'El número de inicio no puede ser mayor que el número de fin.'})
 
-        # Ruta al script de Bash para crear usuarios
-        script_content = "#!/bin/bash\n"
+        # Ruta al script de Bash existente
+        ruta_script = 'redes/bash/crear_usuarios_secuenciales.sh'
 
-        for i in range(inicio, fin + 1):
-            usuario = f"{prefijo}{i}"
-            script_content += f"useradd {usuario}\n"
-            script_content += f"echo 'Usuario {usuario} creado'\n"
+        # Función para leer el contenido del script de Bash
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
+        # Envío de datos al script bash
+        contenido_script = contenido_script.replace('{prefijo}', prefijo)
+        contenido_script = contenido_script.replace('{inicio}', inicio)
+        contenido_script = contenido_script.replace('{fin}', fin)
+        
         # Devolver el script de Bash como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="crear_usuarios_secuenciales.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="crear_usuarios_secuenciales.sh"'
+        return respuesta
     else:
         return render(request, 'usuarios/crear_usuarios.html')
 
