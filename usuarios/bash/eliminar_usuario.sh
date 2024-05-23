@@ -12,7 +12,8 @@ echo "Realizar copia de seguridad: $realizar_backup"
 read -p "¿Desea eliminar el usuario? (S/N): " confirmacion
 
 # Si la confirmación es "S", montar el comando con los datos introducidos
-if [ "$confirmacion" = "S" ]; then
+if [ "$confirmacion" = "S" ]
+then
     # Montaje de comando
     comando_userdel="userdel"
 
