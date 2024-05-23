@@ -7,14 +7,19 @@
 </head>
 <body>
     <h1>Configuración de permisos</h1>
+
+    {% if mensaje_error %}
+    <p>{{ mensaje_error }}</p>
+    {% endif %}
+
     <h2>Pedir permisos para un directorio</h2>
-    <form method="post">
+    <form method="post" action="{% url 'usuarios:configurar_permisos' %}">
         {% csrf_token %}
         <label for="directorio">Directorio:</label><br>
-        <input type="text" id="directorio" name="directorio"><br><br>
+        <input type="text" id="directorio" name="directorio" placeholder="Ruta del directorio"><br><br>
 
         <label for="usuario">Usuario:</label><br>
-        <input type="text" id="usuario" name="usuario"><br><br>
+        <input type="text" id="usuario" name="usuario" placeholder="Nombre del usuario"><br><br>
 
         <label for="permisos">Permisos para usuario:</label><br>
         <select id="permisos" name="permisos">
@@ -59,13 +64,13 @@
     <form method="post" action="{% url 'usuarios:cambiar_usuario_grupo' %}">
         {% csrf_token %}
         <label for="directorio">Directorio:</label><br>
-        <input type="text" id="directorio" name="directorio"><br><br>
+        <input type="text" id="directorio" name="directorio" placeholder="Ruta del directorio"><br><br>
 
-        <label for="usuario">Usuario</label><br>
-        <input type="text" id="usuario" name="usuario"><br><br>
+        <label for="usuario">Usuario:</label><br>
+        <input type="text" id="usuario" name="usuario" placeholder="Nombre del usuario"><br><br>
 
-	<label for="grupo">Grupo:</label><br>
-        <input type="text" id="grupo" name="grupo"><br><br>
+        <label for="grupo">Grupo:</label><br>
+        <input type="text" id="grupo" name="grupo" placeholder="Nombre del grupo"><br><br>
 
         <label for="tipo">Tipo de cambio:</label><br>
         <select id="tipo" name="tipo">

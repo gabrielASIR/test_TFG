@@ -36,7 +36,7 @@ def crear_usuario(request):
         # Validación del directorio skel
         if not os.path.exists(skel):
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe. Debe estar en el sistema antes de crear el usuario'})
-        
+
         # Validación de shell
         shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
         if shell not in shells_validos:
@@ -47,7 +47,7 @@ def crear_usuario(request):
 
         if not gid.isdigit() or not int(gid) >= 1000:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El GID debe ser un número igual o mayor a 1000'})
-        
+
         # Ruta al script de Bash para crear usuarios
         ruta_script = 'usuarios/bash/crear_usuario.sh'
 
@@ -92,22 +92,22 @@ def crear_usuarios_secuenciales(request):
 
         # Validaciones
         if not prefijo:
-            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'El prefijo del usuario es obligatorio.'})
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El prefijo del usuario es obligatorio.'})
 
         try:
             inicio = int(inicio)
             fin = int(fin)
         except ValueError:
-            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'Los números de inicio y fin deben ser enteros válidos.'})
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'Los números de inicio y fin deben ser enteros válidos.'})
 
         if inicio < 1 or fin < 1:
-            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'Los números de inicio y fin deben ser mayores a 0.'})
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'Los números de inicio y fin deben ser mayores a 0.'})
 
         if inicio > fin:
-            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'El número de inicio no puede ser mayor que el número de fin.'})
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El número de inicio no puede ser mayor que el número de fin.'})
 
         # Ruta al script de Bash existente
-        ruta_script = 'redes/bash/crear_usuarios_secuenciales.sh'
+        ruta_script = 'usuarios/bash/crear_usuarios_secuenciales.sh'
 
         # Función para leer el contenido del script de Bash
         with open(ruta_script, 'r') as archivo_script:
@@ -115,15 +115,15 @@ def crear_usuarios_secuenciales(request):
 
         # Envío de datos al script bash
         contenido_script = contenido_script.replace('{prefijo}', prefijo)
-        contenido_script = contenido_script.replace('{inicio}', inicio)
-        contenido_script = contenido_script.replace('{fin}', fin)
-        
+        contenido_script = contenido_script.replace('{inicio}', str(inicio))
+        contenido_script = contenido_script.replace('{fin}', str(fin))
+
         # Devolver el script de Bash como una descarga de archivo
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
         respuesta['Content-Disposition'] = 'attachment; filename="crear_usuarios_secuenciales.sh"'
         return respuesta
     else:
-        return render(request, 'usuarios/crear_usuarios.html')
+        return render(request, 'usuarios/crear_usuario.html')
 
 def modificar_usuario(request):
     if request.method == 'POST':
@@ -153,7 +153,7 @@ def modificar_usuario(request):
 
         if skel and not os.path.exists(skel):
             return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe.'})
-        
+
         shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
         if shell not in shells_validos:
             return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
@@ -167,7 +167,7 @@ def modificar_usuario(request):
         if expira:
             if not re.match(r'\d{2}/\d{2}/\d{4}', expira):
                 return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'La fecha de expiración no tiene el formato correcto (Día/Mes/Año).'})
-        
+
         if inactivo and not inactivo.isdigit():
             return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'Los días de inactividad deben ser un número válido.'})
 
@@ -311,54 +311,99 @@ def configurar_permisos(request):
         permisos_grupo = request.POST.get('permisos_grupo')
         permisos_otros = request.POST.get('permisos_otros')
 
+        # Validaciones
+        mensaje_error = None
+
+        if not directorio:
+            mensaje_error = "El directorio es obligatorio."
+        elif not os.path.exists(directorio):
+            mensaje_error = "El directorio especificado no existe."
+        elif not os.path.isdir(directorio):
+            mensaje_error = "La ruta especificada no es un directorio."
+
+        if not usuario:
+            mensaje_error = "El usuario es obligatorio."
+
+        if permisos not in [str(i) for i in range(8)]:
+            mensaje_error = "Los permisos para usuario son inválidos."
+
+        if permisos_grupo not in [str(i) for i in range(8)]:
+            mensaje_error = "Los permisos para grupo son inválidos."
+
+        if permisos_otros not in [str(i) for i in range(8)]:
+            mensaje_error = "Los permisos para otros son inválidos."
+
+        # Si hay algún error, renderizar el formulario con el mensaje de error
+        if mensaje_error:
+            return render(request, 'usuarios/configurar_permisos.html', {'mensaje_error': mensaje_error})
+
         # Ruta al script de Bash para configurar permisos
-        script_path = 'usuarios/bash/configurar_permisos.sh'
+        ruta_script = 'usuarios/bash/configurar_permisos.sh'
 
-        # Verificar si se proporcionaron datos suficientes
-        if directorio and usuario and permisos and permisos_grupo and permisos_otros:
-            # Leer contenido del script de Bash
-            with open(script_path, 'r') as script_file:
-                script_content = script_file.read()
+        # Leer el contenido del script de Bash
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
-            # Reemplazar marcadores de posición con datos del formulario
-            script_content = script_content.replace('{directorio}', directorio)
-            script_content = script_content.replace('{usuario}', usuario)
-            script_content = script_content.replace('{permisos}', permisos)
-            script_content = script_content.replace('{permisos_grupo}', permisos_grupo)
-            script_content = script_content.replace('{permisos_otros}', permisos_otros)
+        # Reemplazar los marcadores de posición con los datos del formulario
+        contenido_script = contenido_script.replace('{directorio}', directorio)
+        contenido_script = contenido_script.replace('{usuario}', usuario)
+        contenido_script = contenido_script.replace('{permisos}', permisos)
+        contenido_script = contenido_script.replace('{permisos_grupo}', permisos_grupo)
+        contenido_script = contenido_script.replace('{permisos_otros}', permisos_otros)
 
-            # Devolver el script de Bash como una descarga de archivo
-            response = HttpResponse(script_content, content_type='application/x-shellscript')
-            response['Content-Disposition'] = 'attachment; filename="configurar_permisos.sh"'
-            return response
-        else:
-            return HttpResponse("Datos insuficientes para configurar permisos.", status=400)
+        # Devolver el script de Bash como una descarga de archivo
+        response = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        response['Content-Disposition'] = 'attachment; filename="configurar_permisos.sh"'
+        return response
     else:
         return render(request, 'usuarios/configurar_permisos.html')
 
 def cambiar_usuario_grupo(request):
     if request.method == 'POST':
-        # Recoger datos del segundo formulario
+        # Recoger datos del formulario
         directorio = request.POST.get('directorio')
         usuario = request.POST.get('usuario')
         grupo = request.POST.get('grupo')
-        tipo =  request.POST.get('tipo')
+        tipo = request.POST.get('tipo')
 
-        # Ruta al script de Bash para configurar permisos
-        script_path = 'usuarios/bash/cambiar_usuario_grupo.sh'
+        # Validaciones
+        mensaje_error = None
 
-        # Leer contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        if not directorio:
+            mensaje_error = "El directorio es obligatorio."
+        elif not os.path.exists(directorio):
+            mensaje_error = "El directorio especificado no existe."
+        elif not os.path.isdir(directorio):
+            mensaje_error = "La ruta especificada no es un directorio."
 
-        # Reemplazar marcadores de posición con datos del segundo formulario
-        script_content = script_content.replace('{directorio}', directorio)
-        script_content = script_content.replace('{usuario}', usuario)
-        script_content = script_content.replace('{grupo}', grupo)
-        script_content = script_content.replace('{tipo}', tipo)
+        if tipo == 'u' and not usuario:
+            mensaje_error = "El usuario es obligatorio para cambiar el usuario."
+
+        if tipo == 'g' and not grupo:
+            mensaje_error = "El grupo es obligatorio para cambiar el grupo."
+
+        if tipo not in ['u', 'g']:
+            mensaje_error = "El tipo de cambio es inválido."
+
+        # Si hay algún error, renderizar el formulario con el mensaje de error
+        if mensaje_error:
+            return render(request, 'usuarios/configurar_permisos.html', {'mensaje_error': mensaje_error})
+
+        # Ruta al script de Bash para cambiar usuario/grupo
+        ruta_script = 'usuarios/bash/cambiar_usuario_grupo.sh'
+
+        # Leer el contenido del script de Bash
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
+
+        # Reemplazar los marcadores de posición con los datos del formulario
+        contenido_script = contenido_script.replace('{directorio}', directorio)
+        contenido_script = contenido_script.replace('{usuario}', usuario or '')
+        contenido_script = contenido_script.replace('{grupo}', grupo or '')
+        contenido_script = contenido_script.replace('{tipo}', tipo)
 
         # Devolver el script de Bash como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response = HttpResponse(contenido_script, content_type='application/x-shellscript')
         response['Content-Disposition'] = 'attachment; filename="cambiar_usuario_grupo.sh"'
         return response
     else:

@@ -11,14 +11,18 @@ generar_contrasena_segura() {
 # Mostrar la contraseña proporcionada
 echo "Contraseña proporcionada: $contrasena"
 
+# Codificar la contraseña proporcionada con mkpasswd
+contrasena_codificada=$(mkpasswd -m sha-512 "$contrasena")
+
 # Contar cuantas veces aparece la contraseña proporcionada en el sistema
-veces=$(grep -c "$contrasena" /etc/shadow)
+veces=$(grep -c "$contrasena_codificada" /etc/shadow)
 echo "Número de veces que aparece la contraseña en el sistema: $veces"
 
 echo ""
 
 # Comprobar si la contraseña es insegura y generar una recomendación si es necesario
-if [ "$validacion" = "False" ]; then
+if [ "$validacion" = "False" ]
+then
     echo "La contraseña no cumple con los criterios de seguridad."
 
     # Generar una contraseña segura como recomendación

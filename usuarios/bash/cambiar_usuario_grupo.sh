@@ -13,10 +13,13 @@ echo "Tipo: $tipo"
 
 read -p "¿Estos parametros son ciertos? (S/N)" confirmacion
 
-if [ "$confirmacion" = "S" ]; then
+if [ "$confirmacion" = "S" ]
+then
     # Verificar si se proporcionaron datos del segundo formulario
-    if [ -n "$directorio" ] && [ -n "$usuario" ]; then
-        if [ "$tipo" = "u" ] && [ -z "$grupo" ]; then
+    if [ -n "$directorio" ] && [ -n "$usuario" ]
+    then
+        if [ "$tipo" = "u" ] && [ -z "$grupo" ]
+        then
             # Montar el comando para cambiar el usuario y el grupo
             comando_chown="chown -R $usuario:$usuario $directorio"
 
@@ -24,7 +27,8 @@ if [ "$confirmacion" = "S" ]; then
             $comando_chown
 
             echo "Usuario y grupo cambiados correctamente para $directorio"
-        elif [ "$tipo" = "u" ] && [ -n "$grupo" ]; then
+        elif [ "$tipo" = "u" ] && [ -n "$grupo" ]
+        then
             # Montar el comando para cambiar el usuario y el grupo
             comando_chown="chown -R $usuario:$grupo $directorio"
 
@@ -32,13 +36,15 @@ if [ "$confirmacion" = "S" ]; then
             $comando_chown
 
             echo "Usuario y grupo cambiados correctamente para $directorio"
-        elif [ "$tipo" = "g" ] && [ -n "$grupo" ]; then
+        elif [ "$tipo" = "g" ] && [ -n "$grupo" ]
+        then
             # Montar el comando para cambiar el grupo
             comando_chgroup="chgrp -R $grupo $directorio"
 
             # Ejecutar el comando para cambiar el grupo solamente
             $comando_chgroup
-        elif [ "$tipo" = "g" ] && [ -z "$grupo" ]; then
+        elif [ "$tipo" = "g" ] && [ -z "$grupo" ]
+        then
             echo "Dato de grupo faltante"
         else
             echo "Error inesperado, vuelva a rellenar el form"
