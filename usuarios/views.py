@@ -61,21 +61,33 @@ def crear_usuario(request):
         contenido_script = contenido_script.replace('{shell}', shell)
         if otros_grupos:
             contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos)
+        elif otros_grupos = '':
+            contenido_script = contenido_script.replace('{otros_grupos}', '')
         if nombre_completo:
             contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo)
+        elif nombre_completo = '':
+            contenido_script = contenido_script.replace('{nombre_completo}', '')
         if skel:
             contenido_script = contenido_script.replace('{skel}', skel)
-        elif skel = "":
+        elif skel = '':
             contenido_script = contenido_script.replace('{skel}', '/etc/skel')
         if directorio_principal:
             contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
         if expire:
             contenido_script = contenido_script.replace('{expire}', expire)
+        elif expire = '':
+            contenido_script = contenido_script.replace('{expire}', '')
         if uid:
             contenido_script = contenido_script.replace('{uid}', uid)
+        elif uid = '':
+            contenido_script = contenido_script.replace('{uid}', '')
         if gid:
             contenido_script = contenido_script.replace('{gid}', gid)
+        elif gid = '':
+            contenido_script = contenido_script.replace('{gid}', gid)
         if inactivo:
+            contenido_script = contenido_script.replace('{inactivo}', inactivo)
+        elif inactivo = '':
             contenido_script = contenido_script.replace('{inactivo}', inactivo)
 
         # Devolver el script de Bash como una descarga de archivo
