@@ -12,7 +12,6 @@ def crear_usuario(request):
         grupo_principal = request.POST.get('grupo_principal')
         otros_grupos = request.POST.get('otros_grupos')
         nombre_completo = request.POST.get('nombre_completo')
-        directorios = request.POST.get('directorios')
         skel = request.POST.get('skel')
         directorio_principal = request.POST.get('home')
         shell = request.POST.get('shell')
@@ -20,25 +19,34 @@ def crear_usuario(request):
         uid = request.POST.get('uid')
         gid = request.POST.get('gid')
         inactivo = request.POST.get('inactivo')
-        crear_directorio_principal = request.POST.get('crear_directorio_principal')
-        copiar_skel = request.POST.get('copiar_skel')
 
         # Validación de campos obligatorios
         if not nombre_usuario or not contrasena or not grupo_principal or not shell:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'Los campos nombre de usuario, contraseña, grupo principal y shell son obligatorios.'})
 
-        # Validación de formato de campos
-        # Puedes agregar más validaciones según sea necesario
-
         # Validación de contraseña
         if len(contrasena) < 6:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'La contraseña debe tener al menos 6 caracteres.'})
 
+        # Validacion del directorio HOME
+        if not os.path.exists(directorio_principal):
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El directorio HOME para este usuario no existe. Debe existir antes de creaer el usuario.'})
+
+        # Validación del directorio skel
+        if not os.path.exists(skel):
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe. Debe estar en el sistema antes de crear el usuario'})
+        
         # Validación de shell
         shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
         if shell not in shells_validos:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
 
+        if not uid.isdigit() or not int(uid) >= 1000:
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El UID debe ser un número igual o mayor a 1000'})
+
+        if not gid.isdigit() or not int(gid) >= 1000:
+            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El GID debe ser un número igual o mayor a 1000'})
+        
         # Ruta al script de Bash para crear usuarios
         ruta_script = 'usuarios/bash/crear_usuario.sh'
 
@@ -55,10 +63,10 @@ def crear_usuario(request):
             contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos)
         if nombre_completo:
             contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo)
-        if directorios:
-            contenido_script = contenido_script.replace('{directorios}', directorios)
         if skel:
             contenido_script = contenido_script.replace('{skel}', skel)
+        elif skel = "":
+            contenido_script = contenido_script.replace('{skel}', '/etc/skel')
         if directorio_principal:
             contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
         if expire:
@@ -69,14 +77,6 @@ def crear_usuario(request):
             contenido_script = contenido_script.replace('{gid}', gid)
         if inactivo:
             contenido_script = contenido_script.replace('{inactivo}', inactivo)
-        if crear_directorio_principal == 'yes':
-            contenido_script = contenido_script.replace('{crear_directorio_principal}', '-m')
-        else:
-            contenido_script = contenido_script.replace('{crear_directorio_principal}', '')
-        if copiar_skel == 'yes':
-            contenido_script = contenido_script.replace('{copiar_skel}', '-k {skel}')
-        else:
-            contenido_script = contenido_script.replace('{copiar_skel}', '')
 
         # Devolver el script de Bash como una descarga de archivo
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
