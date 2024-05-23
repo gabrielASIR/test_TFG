@@ -203,18 +203,16 @@ def eliminar_usuario(request):
     if request.method == 'POST':
         # Recoge los datos del formulario
         nombre_usuario = request.POST.get('nombre_usuario')
-        realizar_backup = request.POST.get('backup')
-
-        # Validación de campos obligatorios
-        if not nombre_usuario:
-            return render(request, 'usuarios/eliminar_usuario.html', {'mensaje_error': 'El nombre de usuario es obligatorio.'})
+        realizar_copia = request.POST.get('realizar_copia')
+        directorio_copia = request.POST.get('directorio_copia')
+        eliminar_correo = request.POST.get('eliminar_correo')
+        eliminar_crontab = request.POST.get('eliminar_crontab')
+        forzar_eliminacion = request.POST.get('forzar_eliminacion')
+        eliminar_grupos = request.POST.get('eliminar_grupos')
+        eliminar_home = request.POST.get('eliminar_home')
 
         # Ruta al script de Bash para eliminar usuarios
         script_path = 'usuarios/bash/eliminar_usuario.sh'
-
-        # Validación de existencia del script
-        if not os.path.exists(script_path):
-            return render(request, 'usuarios/eliminar_usuario.html', {'mensaje_error': 'No se encontró el script para eliminar usuarios.'})
 
         # Leer el contenido del script de Bash
         with open(script_path, 'r') as script_file:
@@ -222,12 +220,13 @@ def eliminar_usuario(request):
 
         # Reemplazar los marcadores de posición con los datos del formulario
         script_content = script_content.replace('{nombre_usuario}', nombre_usuario)
-
-        # Marcar si se debe realizar una copia de seguridad
-        if realizar_backup == 'yes':
-            script_content = script_content.replace('{realizar_backup}', 'S')
-        else:
-            script_content = script_content.replace('{realizar_backup}', 'N')
+        script_content = script_content.replace('{realizar_copia}', 'S' if realizar_copia == 'yes' else 'N')
+        script_content = script_content.replace('{directorio_copia}', directorio_copia or '/home/gabriel/borrados')
+        script_content = script_content.replace('{eliminar_correo}', 'S' if eliminar_correo == 'yes' else 'N')
+        script_content = script_content.replace('{eliminar_crontab}', 'S' if eliminar_crontab == 'yes' else 'N')
+        script_content = script_content.replace('{forzar_eliminacion}', 'S' if forzar_eliminacion == 'yes' else 'N')
+        script_content = script_content.replace('{eliminar_grupos}', 'S' if eliminar_grupos == 'yes' else 'N')
+        script_content = script_content.replace('{eliminar_home}', 'S' if eliminar_home == 'yes' else 'N')
 
         # Devolver el script de Bash como una descarga de archivo
         response = HttpResponse(script_content, content_type='application/x-shellscript')
