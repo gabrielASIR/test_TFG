@@ -205,8 +205,16 @@ def eliminar_usuario(request):
         nombre_usuario = request.POST.get('nombre_usuario')
         realizar_backup = request.POST.get('backup')
 
+        # Validación de campos obligatorios
+        if not nombre_usuario:
+            return render(request, 'usuarios/eliminar_usuario.html', {'mensaje_error': 'El nombre de usuario es obligatorio.'})
+
         # Ruta al script de Bash para eliminar usuarios
         script_path = 'usuarios/bash/eliminar_usuario.sh'
+
+        # Validación de existencia del script
+        if not os.path.exists(script_path):
+            return render(request, 'usuarios/eliminar_usuario.html', {'mensaje_error': 'No se encontró el script para eliminar usuarios.'})
 
         # Leer el contenido del script de Bash
         with open(script_path, 'r') as script_file:
@@ -215,6 +223,7 @@ def eliminar_usuario(request):
         # Reemplazar los marcadores de posición con los datos del formulario
         script_content = script_content.replace('{nombre_usuario}', nombre_usuario)
 
+        # Marcar si se debe realizar una copia de seguridad
         if realizar_backup == 'yes':
             script_content = script_content.replace('{realizar_backup}', 'S')
         else:
