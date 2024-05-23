@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.validators import RegexValidator
 from django.forms import ValidationError
 import os
+import re
 
 def crear_usuario(request):
     if request.method == 'POST':
@@ -58,37 +59,22 @@ def crear_usuario(request):
         contenido_script = contenido_script.replace('{nombre_usuario}', nombre_usuario)
         contenido_script = contenido_script.replace('{contrasena}', contrasena)
         contenido_script = contenido_script.replace('{grupo_principal}', grupo_principal)
+        contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
         contenido_script = contenido_script.replace('{shell}', shell)
         if otros_grupos:
-            contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos)
-        elif otros_grupos = '':
-            contenido_script = contenido_script.replace('{otros_grupos}', '')
+            contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos or '')
         if nombre_completo:
-            contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo)
-        elif nombre_completo = '':
-            contenido_script = contenido_script.replace('{nombre_completo}', '')
+            contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo or '')
         if skel:
-            contenido_script = contenido_script.replace('{skel}', skel)
-        elif skel = '':
-            contenido_script = contenido_script.replace('{skel}', '/etc/skel')
-        if directorio_principal:
-            contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
+            contenido_script = contenido_script.replace('{skel}', skel or '/etc/skel')
         if expire:
-            contenido_script = contenido_script.replace('{expire}', expire)
-        elif expire = '':
-            contenido_script = contenido_script.replace('{expire}', '')
+            contenido_script = contenido_script.replace('{expire}', expire or '')
         if uid:
-            contenido_script = contenido_script.replace('{uid}', uid)
-        elif uid = '':
-            contenido_script = contenido_script.replace('{uid}', '')
+            contenido_script = contenido_script.replace('{uid}', uid or '')
         if gid:
-            contenido_script = contenido_script.replace('{gid}', gid)
-        elif gid = '':
-            contenido_script = contenido_script.replace('{gid}', gid)
+            contenido_script = contenido_script.replace('{gid}', gid or '')
         if inactivo:
-            contenido_script = contenido_script.replace('{inactivo}', inactivo)
-        elif inactivo = '':
-            contenido_script = contenido_script.replace('{inactivo}', inactivo)
+            contenido_script = contenido_script.replace('{inactivo}', inactivo or '')
 
         # Devolver el script de Bash como una descarga de archivo
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
@@ -147,53 +133,69 @@ def modificar_usuario(request):
         grupo_principal = request.POST.get('grupo_principal')
         otros_grupos = request.POST.get('otros_grupos')
         nombre_completo = request.POST.get('nombre_completo')
-        directorios = request.POST.get('directorios')
         skel = request.POST.get('skel')
         directorio_home = request.POST.get('home')
         shell = request.POST.get('shell')
-        expire = request.POST.get('expire')
+        expira = request.POST.get('expire')
         uid = request.POST.get('uid')
         gid = request.POST.get('gid')
-        inactive = request.POST.get('inactive')
-        crear_home = request.POST.get('create_home')
-        copiar_skel = request.POST.get('copy_skel')
+        inactivo = request.POST.get('inactive')
+
+        # Validaciones
+        if not nombre_usuario or not grupo_principal or not shell:
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'Los campos nombre de usuario, grupo principal y shell son obligatorios.'})
+
+        if contrasena and len(contrasena) < 6:
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'La contraseña debe tener al menos 6 caracteres.'})
+
+        if directorio_home and not os.path.exists(directorio_home):
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El directorio HOME para este usuario no existe.'})
+
+        if skel and not os.path.exists(skel):
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe.'})
+        
+        shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
+        if shell not in shells_validos:
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
+
+        if uid and (not uid.isdigit() or int(uid) < 1000):
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El UID debe ser un número igual o mayor a 1000.'})
+
+        if gid and (not gid.isdigit() or int(gid) < 1000):
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El GID debe ser un número igual o mayor a 1000.'})
+
+        if expira:
+            if not re.match(r'\d{2}/\d{2}/\d{4}', expira):
+                return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'La fecha de expiración no tiene el formato correcto (Día/Mes/Año).'})
+        
+        if inactivo and not inactivo.isdigit():
+            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'Los días de inactividad deben ser un número válido.'})
 
         # Ruta al script de Bash para modificar usuarios
-        script_path = 'usuarios/bash/modificar_usuario.sh'
+        ruta_script = 'usuarios/bash/modificar_usuario.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Reemplazar los marcadores de posición con los datos del formulario
-        script_content = script_content.replace('{nombre_usuario}', nombre_usuario)
-        script_content = script_content.replace('{contrasena}', contrasena)
-        script_content = script_content.replace('{grupo_principal}', grupo_principal)
-        script_content = script_content.replace('{otros_grupos}', otros_grupos)
-        script_content = script_content.replace('{nombre_completo}', nombre_completo)
-        script_content = script_content.replace('{directorios}', directorios)
-        script_content = script_content.replace('{skel}', skel)
-        script_content = script_content.replace('{directorio_home}', directorio_home)
-        script_content = script_content.replace('{shell}', shell)
-        script_content = script_content.replace('{expire}', expire)
-        script_content = script_content.replace('{uid}', uid)
-        script_content = script_content.replace('{gid}', gid)
-        script_content = script_content.replace('{inactive}', inactive)
-
-        if crear_home == 'yes':
-            script_content = script_content.replace('{crear_home}', '-m')
-        else:
-            script_content = script_content.replace('{crear_home}', '')
-
-        if copiar_skel == 'yes':
-            script_content = script_content.replace('{copiar_skel}', '-k {skel}')
-        else:
-            script_content = script_content.replace('{copiar_skel}', '')
+        contenido_script = contenido_script.replace('{nombre_usuario}', nombre_usuario or '')
+        contenido_script = contenido_script.replace('{contrasena}', contrasena or '')
+        contenido_script = contenido_script.replace('{grupo_principal}', grupo_principal or '')
+        contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos or '')
+        contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo or '')
+        contenido_script = contenido_script.replace('{skel}', skel or '')
+        contenido_script = contenido_script.replace('{directorio_home}', directorio_home or '')
+        contenido_script = contenido_script.replace('{shell}', shell or '')
+        contenido_script = contenido_script.replace('{expira}', expira or '')
+        contenido_script = contenido_script.replace('{uid}', uid or '')
+        contenido_script = contenido_script.replace('{gid}', gid or '')
+        contenido_script = contenido_script.replace('{inactivo}', inactivo or '')
 
         # Devolver el script de Bash como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="modificar_usuario.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="modificar_usuario.sh"'
+        return respuesta
     else:
         return render(request, 'usuarios/modificar_usuario.html')
 
