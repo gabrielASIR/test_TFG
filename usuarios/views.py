@@ -211,25 +211,45 @@ def eliminar_usuario(request):
         eliminar_grupos = request.POST.get('eliminar_grupos')
         eliminar_home = request.POST.get('eliminar_home')
 
-        # Ruta al script de Bash para eliminar usuarios
-        script_path = 'usuarios/bash/eliminar_usuario.sh'
+        # Validaciones
+        mensaje_error = None
+
+        # Validar nombre de usuario
+        if not nombre_usuario:
+            mensaje_error = "El nombre de usuario es obligatorio."
+        # Añadir más validaciones para nombre_usuario si es necesario
+
+        # Validar directorio de copia de seguridad si se especificó
+        if realizar_copia == 'yes' and not directorio_copia:
+            mensaje_error = "Debe especificar un directorio para la copia de seguridad."
+        if directorio_copia and not os.path.exists(directorio_copia):
+            mensaje_error = "El directorio especificado para la copia de seguridad no existe."
+        if directorio_copia and not os.path.isdir(directorio_copia):
+            mensaje_error = "La ruta especificada no es un directorio."
+
+        # Si hay algún error, renderizar el formulario con el mensaje de error
+        if mensaje_error:
+            return render(request, 'usuarios/eliminar_usuario.html', {'mensaje_error': mensaje_error})
+
+        # Ruta al script de Bash para crear usuarios
+        ruta_script = 'usuarios/bash/eliminar_usuario.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Reemplazar los marcadores de posición con los datos del formulario
-        script_content = script_content.replace('{nombre_usuario}', nombre_usuario or '')
-        script_content = script_content.replace('{realizar_copia}', realizar_copia or '')
-        script_content = script_content.replace('{directorio_copia}', directorio_copia or '')
-        script_content = script_content.replace('{eliminar_correo}', eliminar_correo or '')
-        script_content = script_content.replace('{eliminar_crontab}', eliminar_crontab or '')
-        script_content = script_content.replace('{forzar_eliminacion}', forzar_eliminacion or '')
-        script_content = script_content.replace('{eliminar_grupos}', eliminar_grupos or '')
-        script_content = script_content.replace('{eliminar_home}', eliminar_home or '')
+        contenido_script = contenido_script.replace('{nombre_usuario}', nombre_usuario)
+        contenido_script = contenido_script.replace('{realizar_copia}', realizar_copia or '')
+        contenido_script = contenido_script.replace('{directorio_copia}', directorio_copia or '')
+        contenido_script = contenido_script.replace('{eliminar_correo}', eliminar_correo or '')
+        contenido_script = contenido_script.replace('{eliminar_crontab}', eliminar_crontab or '')
+        contenido_script = contenido_script.replace('{forzar_eliminacion}', forzar_eliminacion or '')
+        contenido_script = contenido_script.replace('{eliminar_grupos}', eliminar_grupos or '')
+        contenido_script = contenido_script.replace('{eliminar_home}', eliminar_home or '')
 
         # Devolver el script de Bash como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response = HttpResponse(contenido_script, content_type='application/x-shellscript')
         response['Content-Disposition'] = 'attachment; filename="eliminar_usuario.sh"'
         return response
     else:
