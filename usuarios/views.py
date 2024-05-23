@@ -101,30 +101,39 @@ def crear_usuarios_secuenciales(request):
     if request.method == 'POST':
         # Recoger datos del formulario
         prefijo = request.POST.get('prefijo')
-        inicio = int(request.POST.get('inicio'))
-        fin = int(request.POST.get('fin'))
+        inicio = request.POST.get('inicio')
+        fin = request.POST.get('fin')
+
+        # Validaciones
+        if not prefijo:
+            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'El prefijo del usuario es obligatorio.'})
+
+        try:
+            inicio = int(inicio)
+            fin = int(fin)
+        except ValueError:
+            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'Los números de inicio y fin deben ser enteros válidos.'})
+
+        if inicio < 1 or fin < 1:
+            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'Los números de inicio y fin deben ser mayores a 0.'})
+
+        if inicio > fin:
+            return render(request, 'usuarios/crear_usuarios.html', {'mensaje_error': 'El número de inicio no puede ser mayor que el número de fin.'})
 
         # Ruta al script de Bash para crear usuarios
-        script_path = 'usuarios/bash/crear_usuarios_secuenciales.sh'
+        script_content = "#!/bin/bash\n"
 
-        # Inicializar script_content
-        script_content = ""
+        for i in range(inicio, fin + 1):
+            usuario = f"{prefijo}{i}"
+            script_content += f"useradd {usuario}\n"
+            script_content += f"echo 'Usuario {usuario} creado'\n"
 
-        if prefijo is not None:
-            script_content += f"#!/bin/bash\n"
-            for i in range(inicio, fin + 1):
-                usuario = f"{prefijo}{i}"
-                script_content += f"useradd {usuario}\n"
-                script_content += f"echo 'Usuario {usuario} creado'\n"
-
-            # Devolver el script de Bash como una descarga de archivo
-            response = HttpResponse(script_content, content_type='application/x-shellscript')
-            response['Content-Disposition'] = 'attachment; filename="crear_usuarios_secuenciales.sh"'
-            return response
-        else:
-            return HttpResponse("No se proporcionó un prefijo para la creación de usuarios secuenciales.", status=400)
+        # Devolver el script de Bash como una descarga de archivo
+        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response['Content-Disposition'] = 'attachment; filename="crear_usuarios_secuenciales.sh"'
+        return response
     else:
-        return render(request, 'usuarios/crear_usuario.html')
+        return render(request, 'usuarios/crear_usuarios.html')
 
 def modificar_usuario(request):
     if request.method == 'POST':
