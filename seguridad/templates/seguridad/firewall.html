@@ -7,10 +7,15 @@
 </head>
 <body>
     <h1>Configuración de Firewall</h1>
+
+    {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
         <label for="politica_por_defecto">Política por defecto:</label><br>
-        <select id="politica_por_defecto" name="politica_por_defecto" required>
+        <select id="politica_por_defecto" name="politica_por_defecto">
             <option value="ACCEPT">ACCEPT</option>
             <option value="DROP">DROP</option>
         </select><br><br>
@@ -18,75 +23,143 @@
         <input type="checkbox" id="borrar_configuraciones" name="borrar_configuraciones">
         <label for="borrar_configuraciones">Borrar configuraciones</label><br><br>
 
-        <div id="reglas-container">
+        <label for="num_reglas">Número de Reglas:</label><br>
+        <input type="number" id="num_reglas" name="num_reglas" min="1" value="1" placeholder="Número de reglas"><br><br>
+
+        <div id="reglas">
             <div class="regla">
-                <label for="tabla">Tabla:</label><br>
-                <select id="tabla" name="tabla" required>
-                    <option value="filter">filter</option>
-                    <option value="nat">nat</option>
-                </select><br><br>
+                <fieldset>
+                    <legend>Regla 1</legend>
 
-                <label for="opcion">Opción:</label><br>
-                <select id="opcion" name="opcion" required>
-                    <option value="-A">Agregar (-A)</option>
-                    <option value="-I">Insertar (-I)</option>
-                    <option value="-D">Eliminar (-D)</option>
-                </select><br><br>
+                    <label for="tabla_1">Tabla:</label><br>
+                    <select id="tabla_1" name="tabla_1">
+                        <option value="filter">filter</option>
+                        <option value="nat">nat</option>
+                    </select><br><br>
 
-                <label for="cadena">Cadena:</label><br>
-                <select id="cadena" name="cadena" required>
-                    <option value="INPUT">INPUT</option>
-                    <option value="OUTPUT">OUTPUT</option>
-                    <option value="FORWARD">FORWARD</option>
-                    <option value="PREROUTING">PREROUTING</option>
-                    <option value="POSTROUTING">POSTROUTING</option>
-                </select><br><br>
+                    <label for="opcion_1">Opción:</label><br>
+                    <select id="opcion_1" name="opcion_1">
+                        <option value="-A">Agregar (-A)</option>
+                        <option value="-I">Insertar (-I)</option>
+                        <option value="-D">Eliminar (-D)</option>
+                    </select><br><br>
 
-                <label for="direccion_origen">Dirección de origen:</label><br>
-                <input type="text" id="direccion_origen" name="direccion_origen" placeholder="Ej: 192.168.1.1"><br><br>
+                    <label for="cadena_1">Cadena:</label><br>
+                    <select id="cadena_1" name="cadena_1">
+                        <option value="INPUT">INPUT</option>
+                        <option value="OUTPUT">OUTPUT</option>
+                        <option value="FORWARD">FORWARD</option>
+                        <option value="PREROUTING">PREROUTING</option>
+                        <option value="POSTROUTING">POSTROUTING</option>
+                    </select><br><br>
 
-                <label for="puerto_origen">Puerto de origen:</label><br>
-                <input type="number" id="puerto_origen" name="puerto_origen" placeholder="Ej: 22"><br><br>
+                    <label for="direccion_origen_1">Dirección de origen:</label><br>
+                    <input type="text" id="direccion_origen_1" name="direccion_origen_1" placeholder="Ej: 192.168.1.1"><br><br>
 
-                <label for="direccion_destino">Dirección de destino:</label><br>
-                <input type="text" id="direccion_destino" name="direccion_destino" placeholder="Ej: 192.168.1.2"><br><br>
+                    <label for="puerto_origen_1">Puerto de origen:</label><br>
+                    <input type="number" id="puerto_origen_1" name="puerto_origen_1" placeholder="Ej: 22"><br><br>
 
-                <label for="puerto_destino">Puerto de destino:</label><br>
-                <input type="number" id="puerto_destino" name="puerto_destino" placeholder="Ej: 22"><br><br>
+                    <label for="direccion_destino_1">Dirección de destino:</label><br>
+                    <input type="text" id="direccion_destino_1" name="direccion_destino_1" placeholder="Ej: 192.168.1.2"><br><br>
 
-                <label for="protocolo">Protocolo:</label><br>
-                <select id="protocolo" name="protocolo">
-                    <option value="">Cualquiera</option>
-                    <option value="tcp">TCP</option>
-                    <option value="udp">UDP</option>
-                    <option value="icmp">ICMP</option>
-                    <option value="all">ALL</option>
-                </select><br><br>
+                    <label for="puerto_destino_1">Puerto de destino:</label><br>
+                    <input type="number" id="puerto_destino_1" name="puerto_destino_1" placeholder="Ej: 22"><br><br>
 
-                <label for="accion">Acción:</label><br>
-                <select id="accion" name="accion" required>
-                    <option value="ACCEPT">ACCEPT</option>
-                    <option value="DROP">DROP</option>
-                    <option value="REJECT">REJECT</option>
-                </select><br><br>
+                    <label for="protocolo_1">Protocolo:</label><br>
+                    <select id="protocolo_1" name="protocolo_1">
+                        <option value="">Cualquiera</option>
+                        <option value="tcp">TCP</option>
+                        <option value="udp">UDP</option>
+                        <option value="icmp">ICMP</option>
+                        <option value="all">ALL</option>
+                    </select><br><br>
+
+                    <label for="accion_1">Acción:</label><br>
+                    <select id="accion_1" name="accion_1">
+                        <option value="ACCEPT">ACCEPT</option>
+                        <option value="DROP">DROP</option>
+                        <option value="REJECT">REJECT</option>
+                    </select><br><br>
+
+                    <button type="button" onclick="eliminarRegla(this)">Eliminar Regla</button>
+                </fieldset>
+                <br>
             </div>
         </div>
 
-        <button type="button" onclick="agregarRegla()">Agregar Regla</button>
-        <button type="submit">Aplicar Reglas</button>
+        <button type="button" onclick="agregarRegla()">Agregar Regla</button><br><br>
+        
+        <button type="submit">Guardar Configuración</button>
     </form>
 
     <script>
         function agregarRegla() {
-            var reglaContainer = document.querySelector('.regla');
-            var newRegla = reglaContainer.cloneNode(true);
-            var inputs = newRegla.querySelectorAll('input[type="text"], input[type="number"], select');
-            inputs.forEach(function(input) {
-                if (input.type !== 'checkbox' && input.type !== 'radio') {
-                    input.value = '';
-                }
-            });
-            document.getElementById('reglas-container').appendChild(newRegla);
+            const numReglas = document.querySelectorAll('.regla').length + 1;
+            const template = `
+                <div class="regla">
+                    <fieldset>
+                        <legend>Regla ${numReglas}</legend>
+
+                        <label for="tabla_${numReglas}">Tabla:</label><br>
+                        <select id="tabla_${numReglas}" name="tabla_${numReglas}">
+                            <option value="filter">filter</option>
+                            <option value="nat">nat</option>
+                        </select><br><br>
+
+                        <label for="opcion_${numReglas}">Opción:</label><br>
+                        <select id="opcion_${numReglas}" name="opcion_${numReglas}">
+                            <option value="-A">Agregar (-A)</option>
+                            <option value="-I">Insertar (-I)</option>
+                            <option value="-D">Eliminar (-D)</option>
+                        </select><br><br>
+
+                        <label for="cadena_${numReglas}">Cadena:</label><br>
+                        <select id="cadena_${numReglas}" name="cadena_${numReglas}">
+                            <option value="INPUT">INPUT</option>
+                            <option value="OUTPUT">OUTPUT</option>
+                            <option value="FORWARD">FORWARD</option>
+                            <option value="PREROUTING">PREROUTING</option>
+                            <option value="POSTROUTING">POSTROUTING</option>
+                        </select><br><br>
+
+                        <label for="direccion_origen_${numReglas}">Dirección de origen:</label><br>
+                        <input type="text" id="direccion_origen_${numReglas}" name="direccion_origen_${numReglas}" placeholder="Ej: 192.168.1.1"><br><br>
+
+                        <label for="puerto_origen_${numReglas}">Puerto de origen:</label><br>
+                        <input type="number" id="puerto_origen_${numReglas}" name="puerto_origen_${numReglas}" placeholder="Ej: 22"><br><br>
+
+                        <label for="direccion_destino_${numReglas}">Dirección de destino:</label><br>
+                        <input type="text" id="direccion_destino_${numReglas}" name="direccion_destino_${numReglas}" placeholder="Ej: 192.168.1.2"><br><br>
+
+                        <label for="puerto_destino_${numReglas}">Puerto de destino:</label><br>
+                        <input type="number" id="puerto_destino_${numReglas}" name="puerto_destino_${numReglas}" placeholder="Ej: 22"><br><br>
+
+                        <label for="protocolo_${numReglas}">Protocolo:</label><br>
+                        <select id="protocolo_${numReglas}" name="protocolo_${numReglas}">
+                            <option value="">Cualquiera</option>
+                            <option value="tcp">TCP</option>
+                            <option value="udp">UDP</option>
+                            <option value="icmp">ICMP</option>
+                            <option value="all">ALL</option>
+                        </select><br><br>
+
+                        <label for="accion_${numReglas}">Acción:</label><br>
+                        <select id="accion_${numReglas}" name="accion_${numReglas}">
+                            <option value="ACCEPT">ACCEPT</option>
+                            <option value="DROP">DROP</option>
+                            <option value="REJECT">REJECT</option>
+                        </select><br><br>
+
+                        <button type="button" onclick="eliminarRegla(this)">Eliminar Regla</button>
+                    </fieldset>
+                    <br>
+                </div>
+            `;
+            document.getElementById('reglas').insertAdjacentHTML('beforeend', template);
+        }
+
+        function eliminarRegla(button) {
+            button.closest('.regla').remove();
         }
     </script>
 </body>
