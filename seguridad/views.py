@@ -1,91 +1,91 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.validators import RegexValidator
+from django.forms import ValidationError
 import os
+
+validador_ipv4 = RegexValidator(
+    regex=r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',
+    message='Introduce una dirección IPv4 válida.',
+    code='invalid_ipv4'
+)
 
 def firewall(request):
     if request.method == 'POST':
         politica_por_defecto = request.POST.get('politica_por_defecto')
-        borrar_configuraciones = request.POST.get('borrar_configuraciones', False)
-        tablas = request.POST.getlist('tabla')
-        opciones = request.POST.getlist('opcion')
-        cadenas = request.POST.getlist('cadena')
-        direcciones_origen = request.POST.getlist('direccion_origen')
-        puertos_origen = request.POST.getlist('puerto_origen')
-        direcciones_destino = request.POST.getlist('direccion_destino')
-        puertos_destino = request.POST.getlist('puerto_destino')
-        protocolos = request.POST.getlist('protocolo')
-        acciones = request.POST.getlist('accion')
+        borrar_configuraciones = request.POST.get('borrar_configuraciones')
+        num_reglas = request.POST.get('num_reglas')
 
-        num_reglas = len(tablas)
+        if not num_reglas or not num_reglas.isdigit():
+            return render(request, 'seguridad/firewall.html', {'mensaje_error': 'Número de reglas inválido.'})
 
-        # Leer el contenido del script de Bash
-        script_path = os.path.join('seguridad', 'bash', 'firewall.sh')
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        num_reglas = int(num_reglas)
+        all_scripts = []
 
-        # Configuración de la política por defecto
-        script_content = script_content.replace('{politica_por_defecto}', politica_por_defecto)
-
-        # Comprueba si se debe borrar las configuraciones existentes
         if borrar_configuraciones:
-            script_content = script_content.replace('{borrar_configuraciones}', 'on')
-        else:
-            script_content = script_content.replace('{borrar_configuraciones}', '')
+            all_scripts.append("iptables -F")
 
-        # Generar el contenido del script con las reglas
-        rules_content = ""
-        for i in range(num_reglas):
-            rules_content += f"""
-            tabla="{tablas[i]}"
-            opcion="{opciones[i]}"
-            cadena="{cadenas[i]}"
-            direccion_origen="{direcciones_origen[i]}"
-            puerto_origen="{puertos_origen[i]}"
-            direccion_destino="{direcciones_destino[i]}"
-            puerto_destino="{puertos_destino[i]}"
-            protocolo="{protocolos[i]}"
-            accion="{acciones[i]}"
+        for i in range(1, num_reglas + 1):
+            tabla = request.POST.get(f'tabla_{i}')
+            opcion = request.POST.get(f'opcion_{i}')
+            cadena = request.POST.get(f'cadena_{i}')
+            direccion_origen = request.POST.get(f'direccion_origen_{i}')
+            puerto_origen = request.POST.get(f'puerto_origen_{i}')
+            direccion_destino = request.POST.get(f'direccion_destino_{i}')
+            puerto_destino = request.POST.get(f'puerto_destino_{i}')
+            protocolo = request.POST.get(f'protocolo_{i}')
+            accion = request.POST.get(f'accion_{i}')
 
-            # Validar que los campos necesarios no estén vacíos
-            if [ -n "$tabla" ] && [ -n "$opcion" ] && [ -n "$accion" ]; then
-                # Montar el comando de iptables y ejecutarlo
-                comando_iptables="iptables -t $tabla $opcion $cadena"
+            if not tabla or not opcion or not cadena or not accion:
+                return render(request, 'seguridad/firewall.html', {'mensaje_error': 'Todos los campos son obligatorios.', 'num_reglas': num_reglas})
 
-                if [ -n "$direccion_origen" ]; then
-                    comando_iptables+=" -s $direccion_origen"
-                fi
-                if [ -n "$puerto_origen" ]; then
-                    comando_iptables+=" --sport $puerto_origen"
-                fi
-                if [ -n "$direccion_destino" ]; then
-                    comando_iptables+=" -d $direccion_destino"
-                fi
-                if [ -n "$puerto_destino" ]; then
-                    comando_iptables+=" --dport $puerto_destino"
-                fi
-                if [ -n "$protocolo" ] && [ "$protocolo" != "all" ]; then
-                    comando_iptables+=" -p $protocolo"
-                fi
-                comando_iptables+=" -j $accion"
+            if direccion_origen:
+                try:
+                    validador_ipv4(direccion_origen)
+                except ValidationError:
+                    return render(request, 'seguridad/firewall.html', {'mensaje_error': f'Dirección de origen inválida en la regla {i}.', 'num_reglas': num_reglas})
 
-                # Ejecutar el comando de iptables
-                $comando_iptables
+            if direccion_destino:
+                try:
+                    validador_ipv4(direccion_destino)
+                except ValidationError:
+                    return render(request, 'seguridad/firewall.html', {'mensaje_error': f'Dirección de destino inválida en la regla {i}.', 'num_reglas': num_reglas})
 
-                echo "Configuraciones aplicadas correctamente"
-            else
-                echo "Error: algunos campos necesarios están vacíos. La regla no se aplicará."
-            fi
-            """
+            if puerto_origen and (not puerto_origen.isdigit() or not 0 < int(puerto_origen) <= 65535):
+                return render(request, 'seguridad/firewall.html', {'mensaje_error': f'Puerto de origen inválido en la regla {i}.', 'num_reglas': num_reglas})
 
-        # Insertar las reglas generadas en el script
-        script_content = script_content.replace('{rules_content}', rules_content)
+            if puerto_destino and (not puerto_destino.isdigit() or not 0 < int(puerto_destino) <= 65535):
+                return render(request, 'seguridad/firewall.html', {'mensaje_error': f'Puerto de destino inválido en la regla {i}.', 'num_reglas': num_reglas})
 
-        # Generar la respuesta como un archivo para descarga
-        response = HttpResponse(script_content, content_type='application/x-sh')
-        response['Content-Disposition'] = f'attachment; filename=firewall_{politica_por_defecto}.sh'
-        return response
+            # Ruta al script de Bash existente
+            ruta_script = 'seguridad/bash/firewall.sh'
+
+            # Función para leer el contenido del script de Bash
+            with open(ruta_script, 'r') as archivo_script:
+                contenido_script = archivo_script.read()
+
+            # Reemplazar placeholders con los valores de las variables
+            contenido_script = contenido_script.replace('{tabla}', tabla)
+            contenido_script = contenido_script.replace('{opcion}', opcion)
+            contenido_script = contenido_script.replace('{cadena}', cadena)
+            contenido_script = contenido_script.replace('{direccion_origen}', direccion_origen or '')
+            contenido_script = contenido_script.replace('{puerto_origen}', puerto_origen or '')
+            contenido_script = contenido_script.replace('{direccion_destino}', direccion_destino or '')
+            contenido_script = contenido_script.replace('{puerto_destino}', puerto_destino or '')
+            contenido_script = contenido_script.replace('{protocolo}', protocolo or '')
+            contenido_script = contenido_script.replace('{accion}', accion)
+
+            all_scripts.append(contenido_script)
+
+        script_completo = "\n".join(all_scripts)
+
+        # Devolver una respuesta al usuario
+        respuesta = HttpResponse(script_completo, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="firewall.sh"'
+        return respuesta
+
     else:
-        return render(request, 'seguridad/firewall.html')
+        return render(request, 'seguridad/firewall.html', {'num_reglas': 1})
 
 def proxy(request):
     if request.method == 'POST':
