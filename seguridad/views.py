@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, validate_email
 from django.forms import ValidationError
 import os
 
@@ -8,6 +8,12 @@ validador_ipv4 = RegexValidator(
     regex=r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',
     message='Introduce una dirección IPv4 válida.',
     code='invalid_ipv4'
+)
+
+validador_pais = RegexValidator(
+    regex=r'^[A-Z]{2}$',
+    message='Introduce un código de país válido de 2 letras (ISO 3166-1 alfa-2).',
+    code='codigo_pais_invalido'
 )
 
 def firewall(request):
@@ -65,6 +71,8 @@ def firewall(request):
                 contenido_script = archivo_script.read()
 
             # Reemplazar placeholders con los valores de las variables
+            contenido_script = contenido_script.replace('{politica_por_defecto}', politica_por_defecto)
+            contenido_script = contenido_script.replace('{borrar_configuraciones}', borrar_configuraciones)
             contenido_script = contenido_script.replace('{tabla}', tabla)
             contenido_script = contenido_script.replace('{opcion}', opcion)
             contenido_script = contenido_script.replace('{cadena}', cadena)
@@ -89,71 +97,112 @@ def firewall(request):
 
 def proxy(request):
     if request.method == 'POST':
-        # Recopila los datos del formulario
-        acl_list = request.POST.getlist('acl[]')
-        tipo_acl_list = request.POST.getlist('tipo_acl[]')
-        direccion_ip_list = request.POST.getlist('direccion_ip[]')
-        mascara_subred_list = request.POST.getlist('mascara_subred[]')
-        detalle_acl_list = request.POST.getlist('detalle_acl[]')
-        permitir_denegar_list = request.POST.getlist('permitir_denegar[]')
+        num_reglas = request.POST.get('num_reglas')
         ruta_configuracion = request.POST.get('ruta_configuracion')
 
-        # Leer el contenido del script de Bash
-        with open('seguridad/bash/proxy.sh', 'r') as script_file:
-            script_content = script_file.read()
+        if not num_reglas or not num_reglas.isdigit():
+            return render(request, 'seguridad/proxy.html', {'mensaje_error': 'Número de reglas inválido.'})
 
-        # Configuración de las reglas de Squid
-        for i in range(len(acl_list)):
-            script_content += f"\n# Regla {i+1}\n"
-            script_content += f"acl {acl_list[i]} {tipo_acl_list[i]} {direccion_ip_list[i]}/{mascara_subred_list[i]}\n"
-            script_content += f"http_access {permitir_denegar_list[i]} {detalle_acl_list[i]} {acl_list[i]}\n"
+        num_reglas = int(num_reglas)
+        all_scripts = []
+
+        for i in range(1, num_reglas + 1):
+            tipo_regla = request.POST.get(f'tipo_regla_{i}')
+            acl = request.POST.get(f'acl_{i}')
+            tipo_acl = request.POST.get(f'tipo_acl_{i}')
+            http_access = request.POST.get(f'http_access_{i}')
+            accion_http_access = request.POST.get(f'accion_http_access_{i}')
+
+            if not tipo_regla or not acl or not tipo_acl or not http_access or not accion_http_access:
+                return render(request, 'seguridad/proxy.html', {'mensaje_error': 'Todos los campos son obligatorios.', 'num_reglas': num_reglas})
+
+            # Ruta al script de Bash existente
+            ruta_script = 'seguridad/bash/proxy.sh'
+
+            # Función para leer el contenido del script de Bash
+            with open(ruta_script, 'r') as archivo_script:
+                contenido_script = archivo_script.read()
+
+            # Reemplazar placeholders con los valores de las variables
+            contenido_script = contenido_script.replace('{acl}', acl)
+            contenido_script = contenido_script.replace('{tipo_acl}', tipo_acl)
+            contenido_script = contenido_script.replace('{http_access}', http_access)
+            contenido_script = contenido_script.replace('{accion_http_access}', accion_http_access)
+
+            all_scripts.append(contenido_script)
+
+        script_completo = "\n".join(all_scripts)
 
         # Reemplazar los marcadores de posición con los valores proporcionados por el usuario
-        script_content = script_content.replace('{ruta_configuracion}', ruta_configuracion)
+        script_completo = script_completo.replace('{ruta_configuracion}', ruta_configuracion)
 
-        # Generar el archivo de descarga
-        response = HttpResponse(script_content, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="proxy.sh"'
-        return response
+        # Devolver una respuesta al usuario
+        respuesta = HttpResponse(script_completo, content_type='text/plain')
+        respuesta['Content-Disposition'] = 'attachment; filename="proxy.sh"'
+        return respuesta
 
-    # Renderiza el formulario vacío si no se envió un POST
-    return render(request, 'seguridad/proxy.html')
+    else:
+        return render(request, 'seguridad/proxy.html', {'num_reglas': 1})
 
 def certificados(request):
     if request.method == 'POST':
         # Recoge los datos del formulario
         nombre_certificado = request.POST.get('nombre_certificado')
+        organizacion = request.POST.get('organizacion')
+        unidad_organizacional = request.POST.get('unidad_organizacional')
+        localidad = request.POST.get('localidad')
+        provincia = request.POST.get('provincia')
+        pais = request.POST.get('pais')
+        correo_electronico = request.POST.get('correo_electronico')
+        departamento = request.POST.get('departamento')
         clave = request.POST.get('clave')
         repeticion_clave = request.POST.get('repeticion_clave')
+        comentarios = request.POST.get('comentarios')
         directorio_salida = request.POST.get('directorio_salida')
 
         # Validaciones de campos
-        if not nombre_certificado or not clave or not repeticion_clave:
-            return HttpResponse("Error: Nombre del certificado y clave son campos requeridos.")
+        if not nombre_certificado or not clave or not repeticion_clave or not directorio_salida:
+            return render(request, 'seguridad/certificados.html', {'mensaje_error': 'Nombre del certificado, clave, repetir clave y directorio de salida son campos requeridos.'})
 
         if clave != repeticion_clave:
-            return HttpResponse("Error: Las claves no coinciden.")
+            return render(request, 'seguridad/certificados.html', {'mensaje_error': 'Las claves no coinciden.'})
 
-        if not directorio_salida:
-            return HttpResponse("Error: Debe especificar un directorio donde guardar los certificados")
+        if pais:
+            try:
+                validador_pais(pais)
+            except ValidationError:
+                return render(request, 'seguridad/certificados.html', {'mensaje_error': 'Código de país inválido.'})
+
+        if correo_electronico:
+            try:
+                validate_email(correo_electronico)
+            except ValidationError:
+                return render(request, 'seguridad/certificados.html', {'mensaje_error': 'Correo electrónico inválido.'})
 
         # Ruta al script de Bash para generar certificados
-        script_path = 'seguridad/bash/generar_certificado.sh'
+        ruta_script = 'seguridad/bash/generar_certificado.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Configurar los parámetros del script de Bash
-        script_content = script_content.replace('{nombre_certificado}', nombre_certificado)
-        script_content = script_content.replace('{clave}', clave)
-        script_content = script_content.replace('{repeticion_clave}', repeticion_clave)
-        script_content = script_content.replace('{directorio_salida}', directorio_salida)
+        contenido_script = contenido_script.replace('{nombre_certificado}', nombre_certificado)
+        contenido_script = contenido_script.replace('{organizacion}', organizacion or '')
+        contenido_script = contenido_script.replace('{unidad_organizacional}', unidad_organizacional or '')
+        contenido_script = contenido_script.replace('{localidad}', localidad or '')
+        contenido_script = contenido_script.replace('{provincia}', provincia or '')
+        contenido_script = contenido_script.replace('{pais}', pais or '')
+        contenido_script = contenido_script.replace('{correo_electronico}', correo_electronico or '')
+        contenido_script = contenido_script.replace('{departamento}', departamento or '')
+        contenido_script = contenido_script.replace('{clave}', clave)
+        contenido_script = contenido_script.replace('{comentarios}', comentarios or '')
+        contenido_script = contenido_script.replace('{directorio_salida}', directorio_salida)
 
         # Generar el archivo de descarga
-        response = HttpResponse(script_content, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="generar_certificado.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='text/plain')
+        respuesta['Content-Disposition'] = 'attachment; filename="generar_certificado.sh"'
+        return respuesta
     else:
         # Renderiza el formulario vacío si no se envió un POST
         return render(request, 'seguridad/certificados.html')

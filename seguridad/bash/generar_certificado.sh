@@ -33,6 +33,7 @@ read -p "¿Desea generar el certificado con estos datos? (s/n): " confirmacion
 if [ "$confirmacion" != "s" ]
 then
     echo "Operación cancelada. No se generará el certificado."
+    exit 1
 fi
 
 if [ -z "$directorio_salida" ]
@@ -86,18 +87,11 @@ then
     comando="$comando -subj '/CN=$nombre_certificado'"
 fi
 
-if [ -n "$departamento" ]
-then
-    comando="$comando -subj '/departmentName=$departamento'"
-fi
+# Establecer la ruta completa del archivo de certificado
+ruta_certificado="$directorio_salida/$nombre_certificado.crt"
 
-if [ -n "$clave" ]
-then
-    comando="$comando -passout pass:'$clave'"
-fi
+# Ejecutar el comando
+$comando -keyout "$ruta_certificado.key" -out "$ruta_certificado"
 
-# Ejecutar el comando openssl para generar el certificado
-$comando -keyout "$directorio_salida/$nombre_certificado.key" \
-    -out "$directorio_salida/$nombre_certificado.crt"
-
-echo "Certificado generado correctamente."
+# Mostrar mensaje de éxito
+echo "Certificado generado con éxito en: $directorio_salida"
