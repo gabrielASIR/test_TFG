@@ -117,6 +117,15 @@ def programar_copia(request):
         except ValueError:
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La hora de ejecución no tiene un formato válido (HH:MM).'})
 
+        # Validación de formato de hora y minutos
+        try:
+            hora = int(hora)
+            minutos = int(minutos)
+            if not (0 <= hora < 24) or not (0 <= minutos < 60):
+                raise ValueError
+        except ValueError:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Introduzca un tiempo valido. Hora de 0-24, minutos de 0-60.'})
+
         # Procesar los días seleccionados para formar una cadena de días
         dias_validos = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
         if any(dia not in dias_validos for dia in dias_semana):
