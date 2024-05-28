@@ -191,7 +191,7 @@ def configuracion_nas(request):
             return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Protocolo no válido. Debe ser cifs o nfs.'})
 
         # Validacion de permisos
-        if permisos not in [str(i) for i in range(775)]:
+        if permisos not in [str(i) for i in range(776)]:
             return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Permisos no válidos. Establecer de 000 a 775.'})
 	    
         # Validación del modo de subida
