@@ -8,22 +8,27 @@
 <body>
     <h1>Configuración de NAS y Subida de Archivos</h1>
     <h2>Subida de archivos al NAS</h2>
+
+    {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+    {% endif %}
+	
     <form method="post">
         {% csrf_token %}
 	<label for="nombre_nas">Nombre del NAS:</label><br>
-        <input type="text" id="nombre_nas" name="nombre_nas"><br><br>
+        <input type="text" id="nombre_nas" name="nombre_nas" placeholder="Ej: MiNAS"><br><br>
 
 	<label for="ruta_montaje">Ruta de montaje:</label><br>
-        <input type="text" id="ruta_montaje" name="ruta_montaje"><br><br>
+        <input type="text" id="ruta_montaje" name="ruta_montaje" placeholder="Ej: /mnt/nas"><br><br>
 
         <label for="archivos">Rutas de archivos a subir:</label><br>
-        <textarea id="archivos" name="archivos" rows="4" cols="50"></textarea><br><br>
+        <textarea id="archivos" name="archivos" rows="4" cols="50" placeholder="Ej: /ruta/archivo1.txt&#10;/ruta/archivo2.jpg"></textarea><br><br>
 
         <label for="usuario_nas">Usuario del NAS:</label><br>
-        <input type="text" id="usuario_nas" name="usuario_nas"><br><br>
+        <input type="text" id="usuario_nas" name="usuario_nas" placeholder="Ej: usuario"><br><br>
 
         <label for="contrasena_nas">Contraseña del NAS:</label><br>
-        <input type="password" id="contrasena_nas" name="contrasena_nas"><br><br>
+        <input type="password" id="contrasena_nas" name="contrasena_nas" placeholder="Ej: contraseña123"><br><br>
 
         <!-- Agrega aquí los demás campos para la subida de archivos al NAS -->
         <label for="sobrescribir">Sobrescribir archivos existentes:</label><br>
