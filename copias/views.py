@@ -4,6 +4,12 @@ from django.core.validators import RegexValidator
 from django.forms import ValidationError
 import os
 
+validador_ipv4 = RegexValidator(
+    regex=r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',
+    message='Introduce una dirección IPv4 válida.',
+    code='invalid_ipv4'
+)
+
 def configuracion_backups(request):
     if request.method == 'POST':
         # Recoger los datos del formulario
@@ -170,19 +176,32 @@ def configuracion_nas(request):
         if not modo_subida:
             return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'El modo de subida es obligatorio.'})
 
+	# Validacion de la direccion
+        try:
+            validador_ipv4(direccion_nas)
+        except ValidationError:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Introduce una dirección IPv4 válida.'})
+
+        # Verificar si la contraseña del NAS contiene al menos 8 caracteres
+        if len(contrasena_nas) < 8:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'La contraseña del NAS debe tener al menos 8 caracteres.'})
+	    
         # Validación del protocolo
         if protocolo not in ['cifs', 'nfs']:
-            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Protocolo no válido.'})
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Protocolo no válido. Debe ser cifs o nfs.'})
 
+        # Validacion de permisos
+        if permisos not in [str(i) for i in range(775)]:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Permisos no válidos. Establecer de 000 a 775.'})
+	    
         # Validación del modo de subida
         if modo_subida not in ['manual', 'automatico']:
-            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Modo de subida no válido.'})
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Modo de subida no válido. Debe ser manual o automatico'})
 
-        # Leer el contenido del script de configuración del NAS
+        # Ruta al script de Bash existente
         script_path = 'copias/bash/configuracion_nas.sh'
-        if not os.path.exists(script_path):
-            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Error al leer el script de configuración del NAS.'})
 
+	# Leer el contenido del script de Bash
         with open(script_path, 'r') as archivo_script:
             contenido_script = archivo_script.read()
 
