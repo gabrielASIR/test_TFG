@@ -28,11 +28,11 @@ def configuracion_backups(request):
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'La ruta de origen es obligatoria.'})
         if not ruta_destino:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'La ruta de destino es obligatoria.'})
-        
+
         # Validación adicional de la clave de encriptación si se proporciona
         if clave_encriptacion and len(clave_encriptacion) < 8:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'La clave de encriptación debe tener al menos 8 caracteres.'})
-        
+
         # Validación de método de copia
         if metodo_copia not in ['cp', 'rsync', 'tar']:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'Método de copia no válido.'})
@@ -68,54 +68,27 @@ def configuracion_backups(request):
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
         respuesta['Content-Disposition'] = 'attachment; filename="copia_seguridad.sh"'
         return respuesta
-    
+
     else:
         return render(request, 'copias/configuracion_backups.html')
-	    
+
 def programar_copia(request):
     if request.method == 'POST':
         # Recoger los datos del formulario
         nombre_copia = request.POST.get('nombre_copia')
         dias_semana = request.POST.getlist('dias_semana')  # Obtener lista de días seleccionados
-        hora_ejecucion = request.POST.get('hora_ejecucion')
-        frecuencia = request.POST.get('frecuencia')
-        numero_ejecuciones = request.POST.get('numero_ejecuciones')
+        hora = request.POST.get('hora')
+        minutos = request.POST.get('minutos')
 
         # Validación de campos obligatorios
         if not nombre_copia:
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El nombre de la copia es obligatorio.'})
         if not dias_semana:
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Seleccione al menos un día de la semana.'})
-        if not hora_ejecucion:
+        if not hora:
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La hora de ejecución es obligatoria.'})
-        if not frecuencia:
-            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La frecuencia es obligatoria.'})
-        if not numero_ejecuciones:
-            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El número de ejecuciones es obligatorio.'})
-
-        # Validación de frecuencia
-        if frecuencia not in ['diaria', 'semanal', 'mensual']:
-            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Frecuencia no válida.'})
-
-        # Validación de número de ejecuciones
-        try:
-            numero_ejecuciones = int(numero_ejecuciones)
-            if numero_ejecuciones < 1:
-                raise ValueError
-        except ValueError:
-            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El número de ejecuciones debe ser un número entero positivo.'})
-
-        # Validación de formato de hora (HH:MM)
-        try:
-            hora_ejecucion_parts = hora_ejecucion.split(':')
-            if len(hora_ejecucion_parts) != 2:
-                raise ValueError
-            horas = int(hora_ejecucion_parts[0])
-            minutos = int(hora_ejecucion_parts[1])
-            if not (0 <= horas < 24) or not (0 <= minutos < 60):
-                raise ValueError
-        except ValueError:
-            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La hora de ejecución no tiene un formato válido (HH:MM).'})
+        if not minutos:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Los minutos de ejecucion son obligatorios'})
 
         # Validación de formato de hora y minutos
         try:
@@ -130,7 +103,7 @@ def programar_copia(request):
         dias_validos = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
         if any(dia not in dias_validos for dia in dias_semana):
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Días de la semana no válidos.'})
-        
+
         dias_semana_str = ','.join(dias_semana)
 
         # Ruta al script de Bash existente
@@ -143,9 +116,8 @@ def programar_copia(request):
         # Configurar el script con los datos del formulario
         contenido_script = contenido_script.replace('{nombre_copia}', nombre_copia)
         contenido_script = contenido_script.replace('{dias_semana}', dias_semana_str)
-        contenido_script = contenido_script.replace('{hora_ejecucion}', hora_ejecucion)
-        contenido_script = contenido_script.replace('{frecuencia}', frecuencia)
-        contenido_script = contenido_script.replace('{numero_ejecuciones}', str(numero_ejecuciones))
+        contenido_script = contenido_script.replace('{hora}', str(hora))
+        contenido_script = contenido_script.replace('{minutos}', str(minutos))
 
         # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')

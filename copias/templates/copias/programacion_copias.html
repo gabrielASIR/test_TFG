@@ -37,22 +37,13 @@
         <label for="sabado">Sábado</label><br>
 
         <input type="checkbox" id="domingo" name="dias_semana" value="Domingo">
+	<laber for="domingo">Domingo</laber><br><br>
 
         <label for="hora">Hora:</label>
-        <input type="number" id="hora" name="hora" min="0" max="23" placeholder="Ej: 12">
+        <input type="number" id="hora" name="hora" min="0" max="23" placeholder="Hora entre 0 y 24">
     
         <label for="minutos">Minutos:</label>
-        <input type="number" id="minutos" name="minutos" min="0" max="59" placeholder="Ej: 30"><br><br>
-
-        <label for="frecuencia">Frecuencia:</label><br>
-        <select id="frecuencia" name="frecuencia">
-            <option value="diaria">Diaria</option>
-            <option value="semanal">Semanal</option>
-            <option value="mensual">Mensual</option>
-        </select><br><br>
-
-        <label for="numero_ejecuciones">Número de ejecuciones:</label><br>
-        <input type="number" id="numero_ejecuciones" name="numero_ejecuciones" min="1" value="1" required placeholder="Ej: 3"><br><br>
+        <input type="number" id="minutos" name="minutos" min="0" max="59" placeholder="Minutos entre 0 y 60"><br><br>
 
         <button type="submit">Programar Copia</button>
     </form>
