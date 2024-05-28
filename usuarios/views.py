@@ -29,14 +29,6 @@ def crear_usuario(request):
         if len(contrasena) < 6:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'La contraseña debe tener al menos 6 caracteres.'})
 
-        # Validacion del directorio HOME
-        if not os.path.exists(directorio_principal):
-            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El directorio HOME para este usuario no existe. Debe existir antes de creaer el usuario.'})
-
-        # Validación del directorio skel
-        if not os.path.exists(skel):
-            return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe. Debe estar en el sistema antes de crear el usuario'})
-
         # Validación de shell
         shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
         if shell not in shells_validos:
@@ -147,13 +139,7 @@ def modificar_usuario(request):
 
         if contrasena and len(contrasena) < 6:
             return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'La contraseña debe tener al menos 6 caracteres.'})
-
-        if directorio_home and not os.path.exists(directorio_home):
-            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El directorio HOME para este usuario no existe.'})
-
-        if skel and not os.path.exists(skel):
-            return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El directorio skel especificado no existe.'})
-
+            
         shells_validos = ['/bin/bash', '/bin/sh', '/bin/zsh']
         if shell not in shells_validos:
             return render(request, 'usuarios/modificar_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
@@ -371,10 +357,6 @@ def cambiar_usuario_grupo(request):
 
         if not directorio:
             mensaje_error = "El directorio es obligatorio."
-        elif not os.path.exists(directorio):
-            mensaje_error = "El directorio especificado no existe."
-        elif not os.path.isdir(directorio):
-            mensaje_error = "La ruta especificada no es un directorio."
 
         if tipo == 'u' and not usuario:
             mensaje_error = "El usuario es obligatorio para cambiar el usuario."
