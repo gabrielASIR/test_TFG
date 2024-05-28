@@ -152,31 +152,57 @@ def configuracion_nas(request):
         permisos = request.POST.get('permisos')
         modo_subida = request.POST.get('modo_subida')
 
-        # Verificar que todos los campos estén completos
-        if not nombre_nas or not direccion_nas or not usuario_nas or not contrasena_nas or not protocolo or not ruta_montaje or not permisos or not modo_subida:
-            return HttpResponse('Por favor, complete todos los campos del formulario.')
+        # Validación de campos obligatorios
+        if not nombre_nas.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'El nombre del NAS es obligatorio.'})
+        if not direccion_nas.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'La dirección del NAS es obligatoria.'})
+        if not usuario_nas.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'El usuario del NAS es obligatorio.'})
+        if not contrasena_nas.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'La contraseña del NAS es obligatoria.'})
+        if not protocolo:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'El protocolo de montaje es obligatorio.'})
+        if not ruta_montaje.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'La ruta de montaje es obligatoria.'})
+        if not permisos.strip():
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Los permisos de montaje son obligatorios.'})
+        if not modo_subida:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'El modo de subida es obligatorio.'})
+
+        # Validación del protocolo
+        if protocolo not in ['cifs', 'nfs']:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Protocolo no válido.'})
+
+        # Validación del modo de subida
+        if modo_subida not in ['manual', 'automatico']:
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Modo de subida no válido.'})
 
         # Leer el contenido del script de configuración del NAS
-        with open('copias/bash/configuracion_nas.sh', 'r') as script_file:
-            script_content = script_file.read()
+        script_path = 'copias/bash/configuracion_nas.sh'
+        if not os.path.exists(script_path):
+            return render(request, 'copias/configuracion_nas.html', {'mensaje_error': 'Error al leer el script de configuración del NAS.'})
+
+        with open(script_path, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Configurar el script con los datos del formulario
-        script_content = script_content.replace('{nombre_nas}', nombre_nas)
-        script_content = script_content.replace('{direccion_nas}', direccion_nas)
-        script_content = script_content.replace('{usuario_nas}', usuario_nas)
-        script_content = script_content.replace('{contrasena_nas}', contrasena_nas)
-        script_content = script_content.replace('{protocolo}', protocolo)
-        script_content = script_content.replace('{ruta_montaje}', ruta_montaje)
-        script_content = script_content.replace('{permisos}', permisos)
-        script_content = script_content.replace('{modo_subida}', modo_subida)
+        contenido_script = contenido_script.replace('{nombre_nas}', nombre_nas)
+        contenido_script = contenido_script.replace('{direccion_nas}', direccion_nas)
+        contenido_script = contenido_script.replace('{usuario_nas}', usuario_nas)
+        contenido_script = contenido_script.replace('{contrasena_nas}', contrasena_nas)
+        contenido_script = contenido_script.replace('{protocolo}', protocolo)
+        contenido_script = contenido_script.replace('{ruta_montaje}', ruta_montaje)
+        contenido_script = contenido_script.replace('{permisos}', permisos)
+        contenido_script = contenido_script.replace('{modo_subida}', modo_subida)
 
         # Devolver el script de configuración del NAS como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
+        response = HttpResponse(contenido_script, content_type='application/x-shellscript')
         response['Content-Disposition'] = 'attachment; filename="configuracion_nas.sh"'
         return response
     else:
         return render(request, 'copias/configuracion_nas.html')
-
+	    
 def subida_archivos_nas(request):
     if request.method == 'POST':
         # Recoger los datos del formulario
@@ -188,46 +214,44 @@ def subida_archivos_nas(request):
         sobrescribir = request.POST.get('sobrescribir')
         compresion = request.POST.get('compresion')
 
-	# Verificar que todos los campos estén completos
-        if not nombre_nas or not ruta_montaje:
-            return HttpResponse('Por favor, complete todos los campos del formulario.')
+        # Verificar que todos los campos obligatorios estén completos
+        if not nombre_nas or not ruta_montaje or not archivos or not usuario_nas or not contrasena_nas:
+            return render(request, 'copias/subida_archivos_nas.html', {'mensaje_error': 'Por favor, complete todos los campos obligatorios del formulario.'})
 
-        # Verificar si algún campo está vacío
-        if not archivos:
-            return HttpResponse('Por favor, especifique al menos una ruta de archivo.')
+        # Verificar si se proporcionaron rutas de archivo
+        if not archivos.strip():
+            return render(request, 'copias/subida_archivos_nas.html', {'mensaje_error': 'Por favor, especifique al menos una ruta de archivo.'})
 
-        # Verificar si se proporcionó el usuario y la contraseña del NAS
-        if not usuario_nas or not contrasena_nas:
-            return HttpResponse('Por favor, especifique el usuario y la contraseña del NAS.')
+        # Verificar si el nombre del NAS y el usuario contienen caracteres alfanuméricos y guiones bajos
+        if not nombre_nas.isalnum() or not usuario_nas.isalnum():
+            return render(request, 'copias/subida_archivos_nas.html', {'mensaje_error': 'El nombre del NAS y el usuario deben contener solo caracteres alfanuméricos y guiones bajos.'})
 
-        # Verificar si las rutas de archivos existen
-        archivos = archivos.split('\n')
-        for ruta in archivos:
-            if not os.path.exists(ruta.strip()):
-                return HttpResponse(f'La ruta de archivo "{ruta.strip()}" no existe.')
+        # Verificar si la contraseña del NAS contiene al menos 8 caracteres
+        if len(contrasena_nas) < 8:
+            return render(request, 'copias/subida_archivos_nas.html', {'mensaje_error': 'La contraseña del NAS debe tener al menos 8 caracteres.'})
 
         # Ruta al script de Bash existente
-        script_path = 'copias/bash/subida_archivos_nas.sh'
+        ruta_script = 'copias/bash/subida_archivos_nas.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Configurar el script con los datos del formulario
-        script_content = script_content.replace('{nombre_nas}', nombre_nas)
-        script_content = script_content.replace('{ruta_montaje}', ruta_montaje)
-        script_content = script_content.replace('{usuario_nas}', usuario_nas)
-        script_content = script_content.replace('{contrasena_nas}', contrasena_nas)
-        script_content = script_content.replace('{sobrescribir}', '--sobrescribir' if sobrescribir else '')
-        script_content = script_content.replace('{compresion}', '--compresion=' + compresion if compresion != 'none' else '')
+        contenido_script = contenido_script.replace('{nombre_nas}', nombre_nas)
+        contenido_script = contenido_script.replace('{ruta_montaje}', ruta_montaje)
+        contenido_script = contenido_script.replace('{usuario_nas}', usuario_nas)
+        contenido_script = contenido_script.replace('{contrasena_nas}', contrasena_nas)
+        contenido_script = contenido_script.replace('{sobrescribir}', '--sobrescribir' if sobrescribir else '')
+        contenido_script = contenido_script.replace('{compresion}', '--compresion=' + compresion if compresion != 'none' else '')
 
         # Añadir las rutas de archivos al script de Bash
-        script_content += '\n'.join(f'"{ruta.strip()}"' for ruta in archivos)
+        contenido_script += '\n'.join(f'"{ruta.strip()}"' for ruta in archivos.split('\n'))
 
         # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="subida_archivos_nas.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="subida_archivos_nas.sh"'
+        return respuesta
 
     else:
         return render(request, 'copias/subida_archivos_nas.html')
