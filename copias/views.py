@@ -73,37 +73,69 @@ def programar_copia(request):
         dias_semana = request.POST.getlist('dias_semana')  # Obtener lista de días seleccionados
         hora_ejecucion = request.POST.get('hora_ejecucion')
         frecuencia = request.POST.get('frecuencia')
-        numero_ejecuciones = int(request.POST.get('numero_ejecuciones'))
+        numero_ejecuciones = request.POST.get('numero_ejecuciones')
 
-        # Verificar si algún campo está vacío
-        if not nombre_copia or not dias_semana or not hora_ejecucion or not frecuencia:
-            return HttpResponse('Por favor, complete todos los campos del formulario.')
-
-        # Comprobar si se ha seleccionado al menos un día de la semana
+        # Validación de campos obligatorios
+        if not nombre_copia:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El nombre de la copia es obligatorio.'})
         if not dias_semana:
-            return HttpResponse('Por favor, seleccione al menos un día de la semana.')
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Seleccione al menos un día de la semana.'})
+        if not hora_ejecucion:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La hora de ejecución es obligatoria.'})
+        if not frecuencia:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La frecuencia es obligatoria.'})
+        if not numero_ejecuciones:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El número de ejecuciones es obligatorio.'})
+
+        # Validación de frecuencia
+        if frecuencia not in ['diaria', 'semanal', 'mensual']:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Frecuencia no válida.'})
+
+        # Validación de número de ejecuciones
+        try:
+            numero_ejecuciones = int(numero_ejecuciones)
+            if numero_ejecuciones < 1:
+                raise ValueError
+        except ValueError:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'El número de ejecuciones debe ser un número entero positivo.'})
+
+        # Validación de formato de hora (HH:MM)
+        try:
+            hora_ejecucion_parts = hora_ejecucion.split(':')
+            if len(hora_ejecucion_parts) != 2:
+                raise ValueError
+            horas = int(hora_ejecucion_parts[0])
+            minutos = int(hora_ejecucion_parts[1])
+            if not (0 <= horas < 24) or not (0 <= minutos < 60):
+                raise ValueError
+        except ValueError:
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'La hora de ejecución no tiene un formato válido (HH:MM).'})
 
         # Procesar los días seleccionados para formar una cadena de días
+        dias_validos = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        if any(dia not in dias_validos for dia in dias_semana):
+            return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Días de la semana no válidos.'})
+        
         dias_semana_str = ','.join(dias_semana)
 
         # Ruta al script de Bash existente
-        script_path = 'copias/bash/copia_programada.sh'
+        ruta_script = 'copias/bash/copia_programada.sh'
 
         # Leer el contenido del script de Bash
-        with open(script_path, 'r') as script_file:
-            script_content = script_file.read()
+        with open(ruta_script, 'r') as archivo_script:
+            contenido_script = archivo_script.read()
 
         # Configurar el script con los datos del formulario
-        script_content = script_content.replace('{nombre_copia}', nombre_copia)
-        script_content = script_content.replace('{dias_semana}', dias_semana_str)
-        script_content = script_content.replace('{hora_ejecucion}', hora_ejecucion)
-        script_content = script_content.replace('{frecuencia}', frecuencia)
-        script_content = script_content.replace('{numero_ejecuciones}', str(numero_ejecuciones))
+        contenido_script = contenido_script.replace('{nombre_copia}', nombre_copia)
+        contenido_script = contenido_script.replace('{dias_semana}', dias_semana_str)
+        contenido_script = contenido_script.replace('{hora_ejecucion}', hora_ejecucion)
+        contenido_script = contenido_script.replace('{frecuencia}', frecuencia)
+        contenido_script = contenido_script.replace('{numero_ejecuciones}', str(numero_ejecuciones))
 
         # Devolver el script de Bash con las configuraciones aplicadas como una descarga de archivo
-        response = HttpResponse(script_content, content_type='application/x-shellscript')
-        response['Content-Disposition'] = 'attachment; filename="copia_programada.sh"'
-        return response
+        respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
+        respuesta['Content-Disposition'] = 'attachment; filename="copia_programada.sh"'
+        return respuesta
 
     else:
         return render(request, 'copias/programacion_copias.html')
