@@ -8,19 +8,24 @@
 <body>
     <h1>Configuración de NAS y Subida de Archivos</h1>
     <h2>Configuración del NAS</h2>
+    
+    {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+    {% endif %}
+    
     <form method="post">
         {% csrf_token %}
         <label for="nombre_nas">Nombre del NAS:</label><br>
-        <input type="text" id="nombre_nas" name="nombre_nas"><br><br>
+        <input type="text" id="nombre_nas" name="nombre_nas" placeholder="Ej: MiNAS"><br><br>
         
         <label for="direccion_nas">Dirección del NAS:</label><br>
-        <input type="text" id="direccion_nas" name="direccion_nas"><br><br>
+        <input type="text" id="direccion_nas" name="direccion_nas" placeholder="Ej: 192.168.1.100"><br><br>
         
         <label for="usuario_nas">Usuario del NAS:</label><br>
-        <input type="text" id="usuario_nas" name="usuario_nas"><br><br>
+        <input type="text" id="usuario_nas" name="usuario_nas" placeholder="Ej: usuario"><br><br>
         
         <label for="contrasena_nas">Contraseña del NAS:</label><br>
-        <input type="password" id="contrasena_nas" name="contrasena_nas"><br><br>
+        <input type="password" id="contrasena_nas" name="contrasena_nas" placeholder="Ej: contraseña123"><br><br>
         
         <label for="protocolo">Protocolo de montaje:</label><br>
         <select id="protocolo" name="protocolo">
@@ -29,10 +34,10 @@
         </select><br><br>
         
         <label for="ruta_montaje">Ruta de montaje:</label><br>
-        <input type="text" id="ruta_montaje" name="ruta_montaje"><br><br>
+        <input type="text" id="ruta_montaje" name="ruta_montaje" placeholder="Ej: /mnt/nas"><br><br>
         
         <label for="permisos">Permisos de montaje:</label><br>
-        <input type="text" id="permisos" name="permisos"><br><br>
+        <input type="text" id="permisos" name="permisos" placeholder="Ej: rw,user=usuario"><br><br>
         
         <label for="modo_subida">Modo de subida:</label><br>
         <select id="modo_subida" name="modo_subida">
