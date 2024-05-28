@@ -38,8 +38,11 @@
 
         <input type="checkbox" id="domingo" name="dias_semana" value="Domingo">
 
-        <label for="hora_ejecucion">Hora de ejecución:</label><br>
-        <input type="time" id="hora_ejecucion" name="hora_ejecucion" required placeholder="Ej: 08:00"><br><br>
+        <label for="hora">Hora:</label>
+        <input type="number" id="hora" name="hora" min="0" max="23" placeholder="Ej: 12">
+    
+        <label for="minutos">Minutos:</label>
+        <input type="number" id="minutos" name="minutos" min="0" max="59" placeholder="Ej: 30"><br><br>
 
         <label for="frecuencia">Frecuencia:</label><br>
         <select id="frecuencia" name="frecuencia">
