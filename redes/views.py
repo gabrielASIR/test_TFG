@@ -187,10 +187,6 @@ def reserva_ip(request):
         except ValidationError:
             return render(request, 'redes/dhcp.html', {'mensaje_error': 'Alguno de los campos contiene un valor no válido.'})
 
-        # Validación de carpeta de destino
-        if not os.path.exists(carpeta_destino_reserva):
-            return render(request, 'redes/dhcp.html', {'mensaje_error': 'La carpeta de destino no existe.'})
-
         # Ruta al script de Bash para la reserva de IP
         ruta_script = 'redes/bash/reserva_ip.sh'
 
