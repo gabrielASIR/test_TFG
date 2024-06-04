@@ -35,6 +35,14 @@
 </head>
 <body>
     <h1>Configuración de Enrutamiento entre Redes</h1>
+
+    <p>El enrutamiento es la acción encargada de interconectar y dar a conocer redes entre sí. Si una red, no está 
+        interconectada con otra a través de un router, esta no será conocida para la otra red. Por lo tanto, si estas
+     quieren establecer una comunicación va a ser imposible.</p><br>
+    <p>Con esta configuración, dada a través de rutas IP, podremos ser capaces de dar a conocer cualquier red, ya sea
+    la distancia a la que ambas redes se encuentren.</p><br>
+    <p>Ej: ip route add 192.168.1.0/24 vía eth0</p><br>  
+    <p>Ej: ip route add 192.168.1.0/24 vía 192.168.1.1</p><br><br>
     
     {% if mensaje_error %}
         <p>{{ mensaje_error }}</p>
