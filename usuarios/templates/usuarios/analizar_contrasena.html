@@ -7,6 +7,13 @@
 </head>
 <body>
     <h1>Analizador de Contraseñas</h1>
+    <p>Una vez que tenemos implementada una estructura para la gestión de usuarios, podremos tener controlados todos los usuarios de nuestro sistema. Sin embargo,
+    algo que no vamos a poder controlar todavía es lo que hagan los propios usuarios.</p><br>
+    <p>Estos pueden ser los causantes de infinidad de vulnerabilidades en el sistema, ya puede ser por cambios de contraseña como por otras acciones propias, ya que
+    aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p><br>
+    <p>De esta forma, lo que vamos a hacer es tratar de implementar algo más de seguridad en todos sistemas. Ya que no se va a ir un adminsitrador viendo usuario por usuario
+    cual de los usuarios tienen una contraseña que no es segura, vamos a aplicarlo a la inversa. Vamos a buscar contraseñas que sepamos que haya o sean muy frecuentes, analizando
+    cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p>
     <form method="post">
         {% csrf_token %}
         <label for="contrasena">Contraseña:</label><br>
