@@ -7,7 +7,13 @@
 </head>
 <body>
     <h1>Configuración de Firewall</h1>
-
+    <p>Siguiendo con la idea de implementar la mayor seguridad posible dentro de nuestros sistemas, nos encontramos con este menú en concreto. 
+    Justamente con esta configuración vamos a poder controlar qué redes van a poder establecer conexión con otras, ya que una cosa es que queramos
+    que todas se conozcan como hemos hecho en el menú de redes, pero otra diferente es que todas puedan comunicarse entre ellas mismas.</p><br>
+    <p>Es muy importante controlar todo que se maneja en nuestro equipo, y no hay mejor manera de controlar las conexiones entre redes que con iptables,
+    firewall específico para sistemas Linux.</p><br>
+    <p>Ej: iptables -A INPUT -p tcp --dport 80 -j ACCEPT</p><br><br>
+    
     {% if mensaje_error %}
         <p>{{ mensaje_error }}</p>
     {% endif %}
