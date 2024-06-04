@@ -56,7 +56,18 @@
 </head>
 <body>
     <h1>Configuración de Interfaces de Red</h1>
- 
+    <p>A la hora de configurar equipos dentro de las diferentes redes, estos se identifican mediante interfaces de red.
+    Estas interfaces, como ya hemos dicho, son las que van a contener las direcciones IP con las cuales el equipo será conocido
+    o tendrá conexión.</p><br><br>
+	
+    <p>De igual manera, una interfaz puede ser configurada de varias formas: estático, dchp.</p>
+    <ul>
+	 <li>Estática. Se configura de manera manual</li>
+	 <li>DCHP. A través de un servidor, se proporciona automáticamente</li>
+    </ul><br>
+    <p>En este caso, esta opción sirve para configurar interfaces de manera estática.</p><br><br>
+
+
    {% if mensaje_error %}
 	<p>{{ mensaje_error }}</p>
     {% endif %}
