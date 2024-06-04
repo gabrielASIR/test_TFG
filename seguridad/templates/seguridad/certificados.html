@@ -8,7 +8,12 @@
 </head>
 <body>
     <h1>Generación de Certificados SSL/TLS</h1>
-
+    <p>Para acabar de controlar todo lo posible respecto a nuestro sistema, vamos a controlar los datos implementando más seguridad si es posible. 
+    Gracias a estos certificados seremos capaces de asegurarnos que los datos que tengamos o viajen por cualquier destino estén protegidos, evitando
+    que estos puedan ser modificados, suplantados, robados...</p><br>
+    <p>Con esta última implementación, ya cubriremos gran parte de lo necesario para un sistema. Controlamos tanto usuarios, como el tráfico manejado dentro de
+    cualquier estructura, como el tráfico controlado a través de Internet, e inclusive el control completo de nuestros datos.</p><br><br>
+    
     {% if mensaje_error %}
         <p>{{ mensaje_error }}</p>
     {% endif %}
