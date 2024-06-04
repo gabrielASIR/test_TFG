@@ -13,7 +13,8 @@
     aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p><br>
     <p>De esta forma, lo que vamos a hacer es tratar de implementar algo más de seguridad en todos sistemas. Ya que no se va a ir un adminsitrador viendo usuario por usuario
     cual de los usuarios tienen una contraseña que no es segura, vamos a aplicarlo a la inversa. Vamos a buscar contraseñas que sepamos que haya o sean muy frecuentes, analizando
-    cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p>
+    cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p><br><br>
+
     <form method="post">
         {% csrf_token %}
         <label for="contrasena">Contraseña:</label><br>
