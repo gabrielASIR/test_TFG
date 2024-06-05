@@ -7,7 +7,13 @@
 </head>
 <body>
     <h1>Programación de Copias de Seguridad</h1>
-    
+    <p>Otra de las mejores prácticas, además de tener configuradas copias de seguridad, es realizar un planteamiento para que estas
+    se vayan realizando automáticamente de manera periódica. Junto a los distintos tipos de copias y los diferentes tiempos que podemos controlar,
+    podemos asegurar nuestros datos de una manera abismal. Así, si un dato se pierde, se puede recuperar en X puntos distintos, según nuestras
+    necesidades.</p><br>
+    <p>Al encontrarnos en un entorno Linux, la mejor opción para ello es el demonio crontab. En este meteremos la configuración respecto a tiempos de
+    nuestras copias, las cuales estarán almacenadas por nuestro sistema debido a que ya las tendremos configuradas.</p><br><br>
+	
     {% if mensaje_error %}
         <p>{{ mensaje_error }}</p>
     {% endif %}
