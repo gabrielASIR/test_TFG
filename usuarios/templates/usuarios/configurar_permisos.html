@@ -66,7 +66,7 @@
         <p>{{ mensaje_error }}</p>
         {% endif %}
 
-        <h2>Pedir permisos para un directorio</h2>
+        <h2>Cambiar permisos de directorio / fichero.</h2>
         <form method="post" action="{% url 'usuarios:configurar_permisos' %}">
             {% csrf_token %}
             <div class="form-group">
