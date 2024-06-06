@@ -4,22 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analizador de Contraseñas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Analizador de Contraseñas</h1>
-    <p>Una vez que tenemos implementada una estructura para la gestión de usuarios, podremos tener controlados todos los usuarios de nuestro sistema. Sin embargo,
-    algo que no vamos a poder controlar todavía es lo que hagan los propios usuarios.</p><br>
-    <p>Estos pueden ser los causantes de infinidad de vulnerabilidades en el sistema, ya puede ser por cambios de contraseña como por otras acciones propias, ya que
-    aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p><br>
-    <p>De esta forma, lo que vamos a hacer es tratar de implementar algo más de seguridad en todos sistemas. Ya que no se va a ir un adminsitrador viendo usuario por usuario
-    cual de los usuarios tienen una contraseña que no es segura, vamos a aplicarlo a la inversa. Vamos a buscar contraseñas que sepamos que haya o sean muy frecuentes, analizando
-    cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p><br><br>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <!-- Resto de elementos del menú -->
+            </ul>
+        </div>
+    </nav>
 
-    <form method="post">
-        {% csrf_token %}
-        <label for="contrasena">Contraseña:</label><br>
-        <input type="password" id="contrasena" name="contrasena"><br><br>
-        <button type="submit">Analizar Contraseña</button>
-    </form>
+    <div class="container" style="margin-top: 70px;">
+        <h1>Analizador de Contraseñas</h1>
+        <p>Una vez que tenemos implementada una estructura para la gestión de usuarios, podremos tener controlados todos los usuarios de nuestro sistema. Sin embargo,
+        algo que no vamos a poder controlar todavía es lo que hagan los propios usuarios.</p><br>
+        <p>Estos pueden ser los causantes de infinidad de vulnerabilidades en el sistema, ya puede ser por cambios de contraseña como por otras acciones propias, ya que
+        aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p><br>
+        <p>De esta forma, lo que vamos a hacer es tratar de implementar algo más de seguridad en todos sistemas. Ya que no se va a ir un adminsitrador viendo usuario por usuario
+        cual de los usuarios tienen una contraseña que no es segura, vamos a aplicarlo a la inversa. Vamos a buscar contraseñas que sepamos que haya o sean muy frecuentes, analizando
+        cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p><br><br>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" class="form-control">
+            </div><br>
+
+            <button type="submit" class="btn btn-primary">Analizar Contraseña</button>
+        </form>
+    </div>
 </body>
 </html>
