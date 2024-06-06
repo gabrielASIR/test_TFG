@@ -4,28 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido al proyecto TFG</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Bienvenido al proyecto TFG</h1>
-    <p>Aqui ira el texto de información, el cual será añadido al final.</p>
-    <h2>Menú</h2>
-    <ul>
-        <li><a href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
-        <li><a href="{% url 'redes:dhcp' %}">DHCP</a></li>
-        <li><a href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
-	<li><a href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
-        <li><a href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
-        <li><a href="{% url 'usuarios:modificar_usuario' %}">Modificacion de usuarios</a></li>        
-        <li><a href="{% url 'usuarios:eliminar_usuario' %}">Eliminacion de usuarios</a></li>
-        <li><a href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
-        <li><a href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
-	<li><a href="{% url 'seguridad:firewall' %}">Firewall</a></li>
-        <li><a href="{% url 'seguridad:proxy' %}">Proxy</a></li>
-        <li><a href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
-        <li><a href="{% url 'copias:configuracion_backups' %}">Configuracion copias de seguridad locales</a></li>
-        <li><a href="{% url 'copias:programar_copia' %}">Programacion de copias de seguridad</a></li>
-        <li><a href="{% url 'copias:configuracion_nas' %}">Configuracion NAS</a></li>
-        <li><a href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
-    </ul>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">TFG Gabriel</a>
+          </div>
+
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                    <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                    <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                    <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios<span class="caret"></span></a>
+		                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                    <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificacion de usuarios</a></li>
+                    <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminacion de usuarios</a></li>
+                    <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                    <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                    <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                    <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuracion copias de seguridad locales</a></li>
+                    <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programacion de copias de seguridad</a></li>
+                    <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuracion NAS</a></li>
+                    <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="container">
+        <h1>Bienvenido al proyecto TFG</h1>
+        <p>Aqui ira el texto de información, el cual será añadido al final.</p>
+      </div>
+    <div class="script_zone">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
