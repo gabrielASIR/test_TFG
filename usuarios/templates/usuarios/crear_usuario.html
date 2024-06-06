@@ -4,25 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creación de Usuario</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 70px;">
     <h1>Creación de Usuario</h1>
-    <p>A la hora de administrar usuarios en sistemas Linux, siempre se encuentra en esta la creación de ellos. En según que entornos
-    son tan simples como hacer mano de la interfaz gráfica, sin embargo, en según que distribuciones esto no es posible. Hay que echar
-    mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p><br>
+    <p>A la hora de administrar usuarios en sistemas Linux, siempre se encuentra en esta la creación de ellos. En según qué entornos
+        son tan simples como hacer mano de la interfaz gráfica, sin embargo, en según qué distribuciones esto no es posible. Hay que echar
+        mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p><br>
     <p>La complicación en cuestión viene a la hora de ejecutar el comando, pues tenemos dos opciones para ello: adduser y useradd.</p>
     <ul>
-	<li>Adduser. Simplemente se indica el nombre de usuario, lo demás datos son creados automáticamente.l</li>
-	<li>Useradd. Debemos especificar cada uno de los datos que se creen junto al usuario</li>
+        <li>Adduser. Simplemente se indica el nombre de usuario, lo demás datos son creados automáticamente.</li>
+        <li>Useradd. Debemos especificar cada uno de los datos que se creen junto al usuario.</li>
     </ul>
     <p>Nosotros consideramos que la mejor opción es useradd, pues es el que te va a permitir una mayor personalización usuario a usuario. Sin embargo,
-    también existe la posibilidad de que se quieran crear usuarios secuenciales.</p><br>
+        también existe la posibilidad de que se quieran crear usuarios secuenciales.</p><br>
     <p>En ese caso, creemos que no requiere la necesidad de personalización sino de velocidad, y adduser te la va a proporcionar más que useradd.</p><br>
-    <p>Ej: adduser paco
-       Ej: useradd -m -d /pruebas -k /etc/skel -g contactos paco</p><br><br>	
-	
+    <p>Ejemplo: - `adduser paco` - `useradd -m -d /pruebas -k /etc/skel -g contactos paco`</p><br><br>
+
     {% if mensaje_error %}
-	<p>{{ mensaje_error }}</p>
+    <p>{{ mensaje_error }}</p>
     {% endif %}
 
     <form method="post">
@@ -65,12 +114,13 @@
 
         <button type="submit">Crear Usuario</button>
     </form>
+
     <h1>Creación de Usuarios Secuenciales</h1>
-	
+
     {% if mensaje_error %}
-	<p>{{ mensaje_error }}</p>
+    <p>{{ mensaje_error }}</p>
     {% endif %}
-	
+
     <form method="post" action="{% url 'usuarios:crear_usuarios_secuenciales' %}">
         {% csrf_token %}
         <label for="prefijo">Prefijo del usuario:</label><br>
@@ -84,5 +134,6 @@
 
         <button type="submit">Crear Usuarios</button>
     </form>
+</div>
 </body>
 </html>
