@@ -59,7 +59,7 @@
     <h1>Creación de Usuario</h1>
     <p>A la hora de administrar usuarios en sistemas Linux, siempre se encuentra en esta la creación de ellos. En según qué entornos
         son tan simples como hacer mano de la interfaz gráfica, sin embargo, en según qué distribuciones esto no es posible. Hay que echar
-        mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p><br>
+        mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p>
     <p>La complicación en cuestión viene a la hora de ejecutar el comando, pues tenemos dos opciones para ello: adduser y useradd.</p>
     <ul>
         <li>Adduser. Simplemente se indica el nombre de usuario, lo demás datos son creados automáticamente.</li>
@@ -67,8 +67,9 @@
     </ul>
     <p>Nosotros consideramos que la mejor opción es useradd, pues es el que te va a permitir una mayor personalización usuario a usuario. Sin embargo,
         también existe la posibilidad de que se quieran crear usuarios secuenciales.</p><br>
-    <p>En ese caso, creemos que no requiere la necesidad de personalización sino de velocidad, y adduser te la va a proporcionar más que useradd.</p><br>
-    <p>Ejemplo: - `adduser paco` - `useradd -m -d /pruebas -k /etc/skel -g contactos paco`</p><br><br>
+    <p>En ese caso, creemos que no requiere la necesidad de personalización sino de velocidad, y adduser te la va a proporcionar más que useradd.</p>
+    <p>Ejemplo: adduser paco</p>
+    <p>Ejemplo: useradd -m -d /pruebas -k /etc/skel -g contactos paco</p><br>
 
     {% if mensaje_error %}
     <p>{{ mensaje_error }}</p>
