@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de Enrutamiento</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script>
         function agregarRuta() {
             const numRutas = document.querySelectorAll('.ruta').length + 1;
@@ -12,15 +15,15 @@
                     <fieldset>
                         <legend>Ruta ${numRutas}</legend>
                         <label for="red_destino_${numRutas}">Red Destino:</label><br>
-                        <input type="text" id="red_destino_${numRutas}" name="red_destino_${numRutas}" placeholder="Ej: 192.168.1.0 / 172.16.0.0"><br><br>
+                        <input type="text" id="red_destino_${numRutas}" name="red_destino_${numRutas}" placeholder="Ej: 192.168.1.0 / 172.16.0.0" class="form-control"><br><br>
                         
                         <label for="gateway_${numRutas}">Gateway:</label><br>
-                        <input type="text" id="gateway_${numRutas}" name="gateway_${numRutas}" placeholder="Ej: 192.168.1.1"><br><br>
+                        <input type="text" id="gateway_${numRutas}" name="gateway_${numRutas}" placeholder="Ej: 192.168.1.1" class="form-control"><br><br>
                         
                         <label for="mascara_destino_${numRutas}">Máscara:</label><br>
-                        <input type="text" id="mascara_destino_${numRutas}" name="mascara_destino_${numRutas}" placeholder="Formato corto: 24 / 16 / 8"><br><br>
+                        <input type="text" id="mascara_destino_${numRutas}" name="mascara_destino_${numRutas}" placeholder="Formato corto: 24 / 16 / 8" class="form-control"><br><br>
                         
-                        <button type="button" onclick="eliminarRuta(this)">Eliminar Ruta</button>
+                        <button type="button" class="btn btn-danger" onclick="eliminarRuta(this)">Eliminar Ruta</button>
                     </fieldset>
                     <br>
                 </div>
@@ -34,50 +37,53 @@
     </script>
 </head>
 <body>
-    <h1>Configuración de Enrutamiento entre Redes</h1>
+    <div class="container">
+        <h1>Configuración de Enrutamiento entre Redes</h1>
+        
+        {% if mensaje_error %}
+            <p>{{ mensaje_error }}</p>
+        {% endif %}
 
-    <p>El enrutamiento es la acción encargada de interconectar y dar a conocer redes entre sí. Si una red, no está 
-        interconectada con otra a través de un router, esta no será conocida para la otra red. Por lo tanto, si estas
-     quieren establecer una comunicación va a ser imposible.</p><br>
-    <p>Con esta configuración, dada a través de rutas IP, podremos ser capaces de dar a conocer cualquier red, ya sea
-    la distancia a la que ambas redes se encuentren.</p><br>
-    <p>Ej: ip route add 192.168.1.0/24 vía eth0</p><br>  
-    <p>Ej: ip route add 192.168.1.0/24 vía 192.168.1.1</p><br><br>
-    
-    {% if mensaje_error %}
-        <p>{{ mensaje_error }}</p>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <label for="num_enrutamientos">Número de Enrutamientos:</label><br>
-        <input type="number" id="num_enrutamientos" name="num_enrutamientos" min="1" value="1" required><br><br>
-
-        <label for="red_origen">Red Origen:</label><br>
-        <input type="text" id="red_origen" name="red_origen" placeholder="Ej: 192.168.0.0"><br><br>
-
-        <div id="rutas">
-            <div class="ruta">
-                <fieldset>
-                    <legend>Ruta 1</legend>
-                    <label for="red_destino_1">Red Destino:</label><br>
-                    <input type="text" id="red_destino_1" name="red_destino_1" placeholder="Ej: 192.168.1.0 / 172.16.0.0"><br><br>
-                    
-                    <label for="gateway_1">Gateway:</label><br>
-                    <input type="text" id="gateway_1" name="gateway_1" placeholder="Ej: 192.168.1.1"><br><br>
-                    
-                    <label for="mascara_destino_1">Máscara:</label><br>
-                    <input type="text" id="mascara_destino_1" name="mascara_destino_1" placeholder="Formato corto: 24 / 16 / 8"><br><br>
-                    
-                    <button type="button" onclick="eliminarRuta(this)">Eliminar Ruta</button>
-                </fieldset>
-                <br>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="num_enrutamientos">Número de Enrutamientos:</label><br>
+                <input type="number" id="num_enrutamientos" name="num_enrutamientos" min="1" value="1" class="form-control" required><br><br>
             </div>
-        </div>
+            
+            <div class="form-group">
+                <label for="red_origen">Red Origen:</label><br>
+                <input type="text" id="red_origen" name="red_origen" placeholder="Ej: 192.168.0.0" class="form-control"><br><br>
+            </div>
 
-        <button type="button" onclick="agregarRuta()">Agregar Ruta</button><br><br>
+            <div id="rutas">
+                <div class="ruta">
+                    <fieldset>
+                        <legend>Ruta 1</legend>
+                        <div class="form-group">
+                            <label for="red_destino_1">Red Destino:</label><br>
+                            <input type="text" id="red_destino_1" name="red_destino_1" placeholder="Ej: 192.168.1.0 / 172.16.0.0" class="form-control"><br><br>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gateway_1">Gateway:</label><br>
+                            <input type="text" id="gateway_1" name="gateway_1" placeholder="Ej: 192.168.1.1" class="form-control"><br><br>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mascara_destino_1">Máscara:</label><br>
+                            <input type="text" id="mascara_destino_1" name="mascara_destino_1" placeholder="Formato corto: 24 / 16 / 8" class="form-control"><br><br>
+                        </div>
+                        
+                        <button type="button" class="btn btn-danger" onclick="eliminarRuta(this)">Eliminar Ruta</button>
+                    </fieldset>
+                    <br>
+                </div>
+            </div>
 
-        <button type="submit">Guardar Configuración de Enrutamiento</button>
-    </form>
+            <button type="button" class="btn btn-success" onclick="agregarRuta()">Agregar Ruta</button><br><br>
+            <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+        </form>
+    </div>
 </body>
 </html>
