@@ -9,7 +9,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">TFG Gabriel</a>
@@ -17,7 +17,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
                         <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
@@ -26,7 +26,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
                         <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
@@ -36,7 +36,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
                         <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
@@ -44,7 +44,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
                         <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
