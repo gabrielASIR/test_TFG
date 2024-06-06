@@ -4,55 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modificación de Usuario</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Modificación de Usuario</h1>
-    <p>Al igual que se ha implementado una estructura para crear usuarios Linux, si queremos completar al máximo una implementación sobre gestión de usuarios hace
-    falta también la modificación de ellos. Por ello tenemos esta implementación, para no solo tener una simple creación.</p><br><br>
-	
-    {% if mensaje_error %}
-	<p>{{ mensaje_error }}</p>
-    {% endif %}
-    
-    <form method="post">
-        {% csrf_token %}
-        <label for="nombre_usuario">Nombre de usuario:</label><br>
-        <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Nombre que quieras que tenga el usuario"><br><br>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-        <label for="contrasena">Nueva contraseña:</label><br>
-        <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del usuario"><br><br>
+    <div class="container" style="margin-top: 70px;">
+        <h1>Modificación de Usuario</h1>
+        <p>Al igual que se ha implementado una estructura para crear usuarios Linux, si queremos completar al máximo una implementación sobre gestión de usuarios hace
+        falta también la modificación de ellos. Por ello tenemos esta implementación, para no solo tener una simple creación.</p><br>
+        
+        {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre_usuario">Nombre de usuario:</label>
+                <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Nombre que quieras que tenga el usuario" class="form-control">
+            </div><br>
 
-        <label for="grupo_principal">Nuevo grupo principal:</label><br>
-        <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el usuario"><br><br>
+            <div class="form-group">
+                <label for="contrasena">Nueva contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del usuario" class="form-control">
+            </div><br>
 
-        <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
-        <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá"><br><br>
+            <div class="form-group">
+                <label for="grupo_principal">Nuevo grupo principal:</label>
+                <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el usuario" class="form-control">
+            </div><br>
 
-        <label for="nombre_completo">Nombre completo:</label><br>
-        <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario"><br><br>
+            <div class="form-group">
+                <label for="otros_grupos">Otros grupos (separados por comas):</label>
+                <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá" class="form-control">
+            </div><br>
 
-        <label for="skel">Directorio skel:</label><br>
-        <input type="text" id="skel" name="skel" placeholder="Nuevo esqueleto. Ej: /etc/skel"><br><br>
+            <div class="form-group">
+                <label for="nombre_completo">Nombre completo:</label>
+                <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario" class="form-control">
+            </div><br>
 
-        <label for="home">Directorio home:</label><br>
-        <input type="text" id="home" name="home" placeholder="Nuevo Directorio principal. Ej: /home/usuario"><br><br>
+            <div class="form-group">
+                <label for="skel">Directorio skel:</label>
+                <input type="text" id="skel" name="skel" placeholder="Nuevo esqueleto. Ej: /etc/skel" class="form-control">
+            </div><br>
 
-        <label for="shell">Shell:</label><br>
-        <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh"><br><br>
+            <div class="form-group">
+                <label for="home">Directorio home:</label>
+                <input type="text" id="home" name="home" placeholder="Nuevo Directorio principal. Ej: /home/usuario" class="form-control">
+            </div><br>
 
-        <label for="expire">Fecha de expiración de la cuenta:</label><br>
-        <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año"><br><br>
+            <div class="form-group">
+                <label for="shell">Shell:</label>
+                <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh" class="form-control">
+            </div><br>
 
-        <label for="uid">UID:</label><br>
-        <input type="text" id="uid" name="uid" placeholder="Ej: 1002"><br><br>
+            <div class="form-group">
+                <label for="expire">Fecha de expiración de la cuenta:</label>
+                <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año" class="form-control">
+            </div><br>
 
-        <label for="gid">GID:</label><br>
-        <input type="text" id="gid" name="gid" placeholder="Ej: 1050"><br><br>
+            <div class="form-group">
+                <label for="uid">UID:</label>
+                <input type="text" id="uid" name="uid" placeholder="Ej: 1002" class="form-control">
+            </div><br>
 
-        <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
-        <input type="text" id="inactive" name="inactive" placeholder="Introducir numero"><br><br>
+            <div class="form-group">
+                <label for="gid">GID:</label>
+                <input type="text" id="gid" name="gid" placeholder="Ej: 1050" class="form-control">
+            </div><br>
 
-        <button type="submit">Modificar Usuario</button>
-    </form>
+            <div class="form-group">
+                <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label>
+                <input type="text" id="inactive" name="inactive" placeholder="Introducir numero" class="form-control">
+            </div><br>
+
+            <button type="submit" class="btn btn-primary">Modificar Usuario</button>
+        </form>
+    </div>
 </body>
 </html>
+	
