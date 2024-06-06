@@ -4,33 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ping Tester</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Ping Tester</h1>
-    <p>Como todo en la informática, siempre y cuando se apliquen cambios en uno de los equipos habrá que comprobar que, no solo estos
-    cambios han sido aplicados, sino también que funcionan y hacen funcionar al equipo a la perfección.</p>
-    <p>Por ello, se ha implementado esta estructura de ping tester, ya que no hay mejor manera de comprobar cambios en las redes
-    que con un ping. Se almacenarán en un histórico todas pruebas realizadas, de tal forma que tengamos todos cambios registrados con sus resultados.</p><br><br>
-	
-    {% if mensaje_error %}
-        <p>{{ mensaje_error }}</p>
-    {% endif %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <form method="post">
-        {% csrf_token %}
-        <label for="nombre_equipo">Nombre del equipo:</label><br>
-        <input type="text" id="nombre_equipo" name="nombre_equipo" placeholder="Nombre de la maquina destino"><br><br>
+    <div class="container" style="margin-top: 70px;">
+        <h1>Ping Tester</h1>
+        <p>Como todo en la informática, siempre y cuando se apliquen cambios en uno de los equipos habrá que comprobar que, no solo estos
+        cambios han sido aplicados, sino también que funcionan y hacen funcionar al equipo a la perfección.</p>
+        <p>Por ello, se ha implementado esta estructura de ping tester, ya que no hay mejor manera de comprobar cambios en las redes
+        que con un ping. Se almacenarán en un histórico todas pruebas realizadas, de tal forma que tengamos todos cambios registrados con sus resultados.</p><br><br>
+        
+        {% if mensaje_error %}
+            <p>{{ mensaje_error }}</p>
+        {% endif %}
 
-        <label for="direccion_ip">Dirección IP:</label><br>
-        <input type="text" id="direccion_ip" name="direccion_ip" placeholder="Ej: 192.168.100.254"><br><br>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre_equipo">Nombre del equipo:</label>
+                <input type="text" id="nombre_equipo" name="nombre_equipo" placeholder="Nombre de la maquina destino" class="form-control">
+            </div><br>
 
-        <label for="num_intentos">Número de intentos de ping:</label><br>
-        <input type="number" id="num_intentos" name="num_intentos" value="4" min="1" max="10" placeholder="Numero del 1 al 10"><br><br>
-	
-	<label for="historico">Ruta para histórico:</label><br>
-        <input type="text" id="historico" name="historico" placeholder="Ej: /home/gabriel"><br><br>
+            <div class="form-group">
+                <label for="direccion_ip">Dirección IP:</label>
+                <input type="text" id="direccion_ip" name="direccion_ip" placeholder="Ej: 192.168.100.254" class="form-control">
+            </div><br>
 
-        <button type="submit">Realizar prueba de ping</button>
-    </form>
+            <div class="form-group">
+                <label for="num_intentos">Número de intentos de ping:</label>
+                <input type="number" id="num_intentos" name="num_intentos" value="4" min="1" max="10" placeholder="Numero del 1 al 10" class="form-control">
+            </div><br>
+            
+            <div class="form-group">
+                <label for="historico">Ruta para histórico:</label>
+                <input type="text" id="historico" name="historico" placeholder="Ej: /home/gabriel" class="form-control">
+            </div><br>
+
+            <button type="submit" class="btn btn-primary">Realizar prueba de ping</button>
+        </form>
+    </div>
 </body>
 </html>
