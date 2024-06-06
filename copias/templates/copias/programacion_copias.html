@@ -4,54 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programación de Copias de Seguridad</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Programación de Copias de Seguridad</h1>
-    <p>Otra de las mejores prácticas, además de tener configuradas copias de seguridad, es realizar un planteamiento para que estas
-    se vayan realizando automáticamente de manera periódica. Junto a los distintos tipos de copias y los diferentes tiempos que podemos controlar,
-    podemos asegurar nuestros datos de una manera abismal. Así, si un dato se pierde, se puede recuperar en X puntos distintos, según nuestras
-    necesidades.</p><br>
-    <p>Al encontrarnos en un entorno Linux, la mejor opción para ello es el demonio crontab. En este meteremos la configuración respecto a tiempos de
-    nuestras copias, las cuales estarán almacenadas por nuestro sistema debido a que ya las tendremos configuradas.</p><br><br>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 	
-    {% if mensaje_error %}
-        <p>{{ mensaje_error }}</p>
-    {% endif %}
+    <div class="container" style="margin-top: 70px;">
+        <h1>Programación de Copias de Seguridad</h1>
+        <p>Otra de las mejores prácticas, además de tener configuradas copias de seguridad, es realizar un planteamiento para que estas
+        se vayan realizando automáticamente de manera periódica. Junto a los distintos tipos de copias y los diferentes tiempos que podemos controlar,
+        podemos asegurar nuestros datos de una manera abismal. Así, si un dato se pierde, se puede recuperar en X puntos distintos, según nuestras
+        necesidades.</p>
+        <p>Al encontrarnos en un entorno Linux, la mejor opción para ello es el demonio crontab. En este meteremos la configuración respecto a tiempos de
+        nuestras copias, las cuales estarán almacenadas por nuestro sistema debido a que ya las tendremos configuradas.</p><br>
+        
+        {% if mensaje_error %}
+            <p>{{ mensaje_error }}</p>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre_copia">Nombre de la copia:</label>
+                <input type="text" id="nombre_copia" name="nombre_copia" required placeholder="Ej: CopiaDiaria" class="form-control">
+            </div><br>
+
+            <div class="form-group">
+                <label for="dias_semana">Días de la semana:</label><br>
+                <label class="checkbox-inline"><input type="checkbox" id="lunes" name="dias_semana" value="Lunes">Lunes</label>
+                <label class="checkbox-inline"><input type="checkbox" id="martes" name="dias_semana" value="Martes">Martes</label>
+                <label class="checkbox-inline"><input type="checkbox" id="miercoles" name="dias_semana" value="Miércoles">Miércoles</label>
+                <label class="checkbox-inline"><input type="checkbox" id="jueves" name="dias_semana" value="Jueves">Jueves</label>
+                <label class="checkbox-inline"><input type="checkbox" id="viernes" name="dias_semana" value="Viernes">Viernes</label>
+                <label class="checkbox-inline"><input type="checkbox" id="sabado" name="dias_semana" value="Sábado">Sábado</label>
+                <label class="checkbox-inline"><input type="checkbox" id="domingo" name="dias_semana" value="Domingo">Domingo</label>
+            </div><br>
+
+            <div class="form-group">
+                <label for="hora">Hora:</label>
+                <input type="number" id="hora" name="hora" min="0" max="23" placeholder="Hora entre 0 y 24" class="form-control">
+            </div>
     
-    <form method="post">
-        {% csrf_token %}
-        <label for="nombre_copia">Nombre de la copia:</label><br>
-        <input type="text" id="nombre_copia" name="nombre_copia" required placeholder="Ej: CopiaDiaria"><br><br>
+            <div class="form-group">
+                <label for="minutos">Minutos:</label>
+                <input type="number" id="minutos" name="minutos" min="0" max="59" placeholder="Minutos entre 0 y 60" class="form-control">
+            </div><br>
 
-        <label for="dias_semana">Días de la semana:</label><br>
-        <input type="checkbox" id="lunes" name="dias_semana" value="Lunes">
-        <label for="lunes">Lunes</label><br>
-
-        <input type="checkbox" id="martes" name="dias_semana" value="Martes">
-        <label for="martes">Martes</label><br>
-
-        <input type="checkbox" id="miercoles" name="dias_semana" value="Miércoles">
-        <label for="miercoles">Miércoles</label><br>
- 
-        <input type="checkbox" id="jueves" name="dias_semana" value="Jueves">
-        <label for="jueves">Jueves</label><br>
-
-        <input type="checkbox" id="viernes" name="dias_semana" value="Viernes">
-        <label for="viernes">Viernes</label><br>
-
-        <input type="checkbox" id="sabado" name="dias_semana" value="Sábado">
-        <label for="sabado">Sábado</label><br>
-
-        <input type="checkbox" id="domingo" name="dias_semana" value="Domingo">
-	<laber for="domingo">Domingo</laber><br><br>
-
-        <label for="hora">Hora:</label>
-        <input type="number" id="hora" name="hora" min="0" max="23" placeholder="Hora entre 0 y 24">
-    
-        <label for="minutos">Minutos:</label>
-        <input type="number" id="minutos" name="minutos" min="0" max="59" placeholder="Minutos entre 0 y 60"><br><br>
-
-        <button type="submit">Programar Copia</button>
-    </form>
+            <button type="submit" class="btn btn-primary">Programar Copia</button>
+        </form>
+    </div>
 </body>
 </html>
