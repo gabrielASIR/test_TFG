@@ -4,99 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de Firewall</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Configuración de Firewall</h1>
-    <p>Siguiendo con la idea de implementar la mayor seguridad posible dentro de nuestros sistemas, nos encontramos con este menú en concreto. 
-    Justamente con esta configuración vamos a poder controlar qué redes van a poder establecer conexión con otras, ya que una cosa es que queramos
-    que todas se conozcan como hemos hecho en el menú de redes, pero otra diferente es que todas puedan comunicarse entre ellas mismas.</p><br>
-    <p>Es muy importante controlar todo que se maneja en nuestro equipo, y no hay mejor manera de controlar las conexiones entre redes que con iptables,
-    firewall específico para sistemas Linux.</p><br>
-    <p>Ej: iptables -A INPUT -p tcp --dport 80 -j ACCEPT</p><br><br>
-    
-    {% if mensaje_error %}
-        <p>{{ mensaje_error }}</p>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <label for="politica_por_defecto">Política por defecto:</label><br>
-        <select id="politica_por_defecto" name="politica_por_defecto">
-            <option value="ACCEPT">ACCEPT</option>
-            <option value="DROP">DROP</option>
-        </select><br><br>
-
-        <input type="checkbox" id="borrar_configuraciones" name="borrar_configuraciones">
-        <label for="borrar_configuraciones">Borrar configuraciones</label><br><br>
-
-        <label for="num_reglas">Número de Reglas:</label><br>
-        <input type="number" id="num_reglas" name="num_reglas" min="1" value="1" placeholder="Número de reglas"><br><br>
-
-        <div id="reglas">
-            <div class="regla">
-                <fieldset>
-                    <legend>Regla 1</legend>
-
-                    <label for="tabla_1">Tabla:</label><br>
-                    <select id="tabla_1" name="tabla_1">
-                        <option value="filter">filter</option>
-                        <option value="nat">nat</option>
-                    </select><br><br>
-
-                    <label for="opcion_1">Opción:</label><br>
-                    <select id="opcion_1" name="opcion_1">
-                        <option value="-A">Agregar (-A)</option>
-                        <option value="-I">Insertar (-I)</option>
-                        <option value="-D">Eliminar (-D)</option>
-                    </select><br><br>
-
-                    <label for="cadena_1">Cadena:</label><br>
-                    <select id="cadena_1" name="cadena_1">
-                        <option value="INPUT">INPUT</option>
-                        <option value="OUTPUT">OUTPUT</option>
-                        <option value="FORWARD">FORWARD</option>
-                        <option value="PREROUTING">PREROUTING</option>
-                        <option value="POSTROUTING">POSTROUTING</option>
-                    </select><br><br>
-
-                    <label for="direccion_origen_1">Dirección de origen:</label><br>
-                    <input type="text" id="direccion_origen_1" name="direccion_origen_1" placeholder="Ej: 192.168.1.1"><br><br>
-
-                    <label for="puerto_origen_1">Puerto de origen:</label><br>
-                    <input type="number" id="puerto_origen_1" name="puerto_origen_1" placeholder="Ej: 22"><br><br>
-
-                    <label for="direccion_destino_1">Dirección de destino:</label><br>
-                    <input type="text" id="direccion_destino_1" name="direccion_destino_1" placeholder="Ej: 192.168.1.2"><br><br>
-
-                    <label for="puerto_destino_1">Puerto de destino:</label><br>
-                    <input type="number" id="puerto_destino_1" name="puerto_destino_1" placeholder="Ej: 22"><br><br>
-
-                    <label for="protocolo_1">Protocolo:</label><br>
-                    <select id="protocolo_1" name="protocolo_1">
-                        <option value="">Cualquiera</option>
-                        <option value="tcp">TCP</option>
-                        <option value="udp">UDP</option>
-                        <option value="icmp">ICMP</option>
-                        <option value="all">ALL</option>
-                    </select><br><br>
-
-                    <label for="accion_1">Acción:</label><br>
-                    <select id="accion_1" name="accion_1">
-                        <option value="ACCEPT">ACCEPT</option>
-                        <option value="DROP">DROP</option>
-                        <option value="REJECT">REJECT</option>
-                    </select><br><br>
-
-                    <button type="button" onclick="eliminarRegla(this)">Eliminar Regla</button>
-                </fieldset>
-                <br>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
             </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
+    </nav>
 
-        <button type="button" onclick="agregarRegla()">Agregar Regla</button><br><br>
+    <div class="container">
+        <h1>Configuración de Firewall</h1>
+        <p>Siguiendo con la idea de implementar la mayor seguridad posible dentro de nuestros sistemas, nos encontramos con este menú en concreto. 
+        Justamente con esta configuración vamos a poder controlar qué redes van a poder establecer conexión con otras, ya que una cosa es que queramos
+        que todas se conozcan como hemos hecho en el menú de redes, pero otra diferente es que todas puedan comunicarse entre ellas mismas.</p><br>
+        <p>Es muy importante controlar todo que se maneja en nuestro equipo, y no hay mejor manera de controlar las conexiones entre redes que con iptables,
+        firewall específico para sistemas Linux.</p><br>
+        <p>Ej: iptables -A INPUT -p tcp --dport 80 -j ACCEPT</p><br><br>
         
-        <button type="submit">Guardar Configuración</button>
-    </form>
+        {% if mensaje_error %}
+            <p>{{ mensaje_error }}</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="politica_por_defecto">Política por defecto:</label><br>
+            <select id="politica_por_defecto" name="politica_por_defecto">
+                <option value="ACCEPT">ACCEPT</option>
+                <option value="DROP">DROP</option>
+            </select><br><br>
+
+            <input type="checkbox" id="borrar_configuraciones" name="borrar_configuraciones">
+            <label for="borrar_configuraciones">Borrar configuraciones</label><br><br>
+
+            <label for="num_reglas">Número de Reglas:</label><br>
+            <input type="number" id="num_reglas" name="num_reglas" min="1" value="1" placeholder="Número de reglas"><br><br>
+
+            <div id="reglas">
+                <div class="regla">
+                    <fieldset>
+                        <legend>Regla 1</legend>
+
+                        <label for="tabla_1">Tabla:</label><br>
+                        <select id="tabla_1" name="tabla_1">
+                            <option value="filter">filter</option>
+                            <option value="nat">nat</option>
+                        </select><br><br>
+
+                        <label for="opcion_1">Opción:</label><br>
+                        <select id="opcion_1" name="opcion_1">
+                            <option value="-A">Agregar (-A)</option>
+                            <option value="-I">Insertar (-I)</option>
+                            <option value="-D">Eliminar (-D)</option>
+                        </select><br><br>
+
+                        <label for="cadena_1">Cadena:</label><br>
+                        <select id="cadena_1" name="cadena_1">
+                            <option value="INPUT">INPUT</option>
+                            <option value="OUTPUT">OUTPUT</option>
+                            <option value="FORWARD">FORWARD</option>
+                            <option value="PREROUTING">PREROUTING</option>
+                            <option value="POSTROUTING">POSTROUTING</option>
+                        </select><br><br>
+
+                        <label for="direccion_origen_1">Dirección de origen:</label><br>
+                        <input type="text" id="direccion_origen_1" name="direccion_origen_1" placeholder="Ej: 192.168.1.1"><br><br>
+
+                        <label for="puerto_origen_1">Puerto de origen:</label><br>
+                        <input type="number" id="puerto_origen_1" name="puerto_origen_1" placeholder="Ej: 22"><br><br>
+
+                        <label for="direccion_destino_1">Dirección de destino:</label><br>
+                        <input type="text" id="direccion_destino_1" name="direccion_destino_1" placeholder="Ej: 192.168.1.2"><br><br>
+
+                        <label for="puerto_destino_1">Puerto de destino:</label><br>
+                        <input type="number" id="puerto_destino_1" name="puerto_destino_1" placeholder="Ej: 22"><br><br>
+
+                        <label for="protocolo_1">Protocolo:</label><br>
+                        <select id="protocolo_1" name="protocolo_1">
+                            <option value="">Cualquiera</option>
+                            <option value="tcp">TCP</option>
+                            <option value="udp">UDP</option>
+                            <option value="icmp">ICMP</option>
+                            <option value="all">ALL</option>
+                        </select><br><br>
+
+                        <label for="accion_1">Acción:</label><br>
+                        <select id="accion_1" name="accion_1">
+                            <option value="ACCEPT">ACCEPT</option>
+                            <option value="DROP">DROP</option>
+                            <option value="REJECT">REJECT</option>
+                        </select><br><br>
+
+                        <button type="button" onclick="eliminarRegla(this)">Eliminar Regla</button>
+                    </fieldset>
+                    <br>
+                </div>
+            </div>
+
+            <button type="button" onclick="agregarRegla()">Agregar Regla</button><br><br>
+            
+            <button type="submit">Guardar Configuración</button>
+        </form>
+    </div>
 
     <script>
         function agregarRegla() {
