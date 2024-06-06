@@ -4,47 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración de NAS y Subida de Archivos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Configuración de NAS y Subida de Archivos</h1>
-    <h2>Subida de archivos al NAS</h2>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TFG Gabriel</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Redes <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'redes:interfaces' %}">Interfaces de red</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:dhcp' %}">DHCP</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:enrutamiento' %}">Enrutamiento</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <p>Una vez que tengamos nuestro NAS configurado, simplemente deberemos configurar una copia tal y como lo hemos hecho,
-    solo que en este caso el destino no será de manera local sino que será el NAS.</p><br><br>
-	
-    {% if mensaje_error %}
-        <p>{{ mensaje_error }}</p>
-    {% endif %}
-	
-    <form method="post">
-        {% csrf_token %}
-	<label for="nombre_nas">Nombre del NAS:</label><br>
-        <input type="text" id="nombre_nas" name="nombre_nas" placeholder="Ej: MiNAS"><br><br>
+    <div class="container">
+        <h1 class="mt-5">Configuración de NAS y Subida de Archivos</h1>
+        <h2 class="mt-4">Subida de archivos al NAS</h2>
 
-	<label for="ruta_montaje">Ruta de montaje:</label><br>
-        <input type="text" id="ruta_montaje" name="ruta_montaje" placeholder="Ej: /mnt/nas"><br><br>
-
-        <label for="archivos">Rutas de archivos a subir:</label><br>
-        <textarea id="archivos" name="archivos" rows="4" cols="50" placeholder="Ej: /ruta/archivo1.txt&#10;/ruta/archivo2.jpg"></textarea><br><br>
-
-        <label for="usuario_nas">Usuario del NAS:</label><br>
-        <input type="text" id="usuario_nas" name="usuario_nas" placeholder="Ej: usuario"><br><br>
-
-        <label for="contrasena_nas">Contraseña del NAS:</label><br>
-        <input type="password" id="contrasena_nas" name="contrasena_nas" placeholder="Ej: contraseña123"><br><br>
-
-        <!-- Agrega aquí los demás campos para la subida de archivos al NAS -->
-        <label for="sobrescribir">Sobrescribir archivos existentes:</label><br>
-        <input type="checkbox" id="sobrescribir" name="sobrescribir" value="sobrescribir"><br><br>
-
-        <label for="compresion">Compresión de archivos:</label><br>
-        <select id="compresion" name="compresion">
-            <option value="none">Ninguna</option>
-            <option value="gzip">Gzip</option>
-            <option value="bzip2">Bzip2</option>
-        </select><br><br>
+        <p>Una vez que tengamos nuestro NAS configurado, simplemente deberemos configurar una copia tal y como lo hemos hecho,
+        solo que en este caso el destino no será de manera local sino que será el NAS.</p><br><br>
         
-        <button type="submit">Subir archivos al NAS</button>
-    </form>
+        {% if mensaje_error %}
+            <p>{{ mensaje_error }}</p>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre_nas">Nombre del NAS:</label>
+                <input type="text" class="form-control" id="nombre_nas" name="nombre_nas" placeholder="Ej: MiNAS">
+            </div>
+
+            <div class="form-group">
+                <label for="ruta_montaje">Ruta de montaje:</label>
+                <input type="text" class="form-control" id="ruta_montaje" name="ruta_montaje" placeholder="Ej: /mnt/nas">
+            </div>
+
+            <div class="form-group">
+                <label for="archivos">Rutas de archivos a subir:</label>
+                <textarea class="form-control" id="archivos" name="archivos" rows="4" placeholder="Ej: /ruta/archivo1.txt&#10;/ruta/archivo2.jpg"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="usuario_nas">Usuario del NAS:</label>
+                <input type="text" class="form-control" id="usuario_nas" name="usuario_nas" placeholder="Ej: usuario">
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena_nas">Contraseña del NAS:</label>
+                <input type="password" class="form-control" id="contrasena_nas" name="contrasena_nas" placeholder="Ej: contraseña123">
+            </div>
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="sobrescribir" name="sobrescribir" value="sobrescribir">
+                <label class="form-check-label" for="sobrescribir">Sobrescribir archivos existentes</label>
+            </div>
+
+            <div class="form-group">
+                <label for="compresion">Compresión de archivos:</label>
+                <select class="form-control" id="compresion" name="compresion">
+                    <option value="none">Ninguna</option>
+                    <option value="gzip">Gzip</option>
+                    <option value="bzip2">Bzip2</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Subir archivos al NAS</button>
+        </form>
+    </div>
 </body>
 </html>
