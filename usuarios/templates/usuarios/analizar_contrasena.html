@@ -25,7 +25,33 @@
                         <li><a class="dropdown-item" href="{% url 'redes:pingtester' %}">Ping Tester</a></li>
                     </ul>
                 </li>
-                <!-- Resto de elementos del menú -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usuarios <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'usuarios:crear_usuario' %}">Creación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:modificar_usuario' %}">Modificación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:eliminar_usuario' %}">Eliminación de usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:analizar_contrasena' %}">Analizador de contraseñas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:configurar_permisos' %}">Configurador de permisos</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Seguridad <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'seguridad:firewall' %}">Firewall</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:proxy' %}">Proxy</a></li>
+                        <li><a class="dropdown-item" href="{% url 'seguridad:certificados' %}">Certificados SSL/TLS</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Copias <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_backups' %}">Configuración copias de seguridad locales</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:programar_copia' %}">Programación de copias de seguridad</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:configuracion_nas' %}">Configuración NAS</a></li>
+                        <li><a class="dropdown-item" href="{% url 'copias:subida_archivos_nas' %}">Subida de archivos al NAS</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
@@ -33,12 +59,12 @@
     <div class="container" style="margin-top: 70px;">
         <h1>Analizador de Contraseñas</h1>
         <p>Una vez que tenemos implementada una estructura para la gestión de usuarios, podremos tener controlados todos los usuarios de nuestro sistema. Sin embargo,
-        algo que no vamos a poder controlar todavía es lo que hagan los propios usuarios.</p><br>
+        algo que no vamos a poder controlar todavía es lo que hagan los propios usuarios.</p>
         <p>Estos pueden ser los causantes de infinidad de vulnerabilidades en el sistema, ya puede ser por cambios de contraseña como por otras acciones propias, ya que
-        aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p><br>
+        aunque al crearlos ya tenemos esa seguridad implementada a través de nuestro programa, una vez ya sean trabajados se pueden cambiar sin problema.</p>
         <p>De esta forma, lo que vamos a hacer es tratar de implementar algo más de seguridad en todos sistemas. Ya que no se va a ir un adminsitrador viendo usuario por usuario
         cual de los usuarios tienen una contraseña que no es segura, vamos a aplicarlo a la inversa. Vamos a buscar contraseñas que sepamos que haya o sean muy frecuentes, analizando
-        cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p><br><br>
+        cuales de todos usuarios la tienen. Una vez lo sepamos, sabremos si esa contraseña es segura para ellos o no. Si no lo es, inclusive se proporcionará una de ejemplo para que sea cambiada.</p><br>
 
         <form method="post">
             {% csrf_token %}
