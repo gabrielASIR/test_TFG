@@ -56,116 +56,116 @@
         </div>
     </nav>
     <div class="container" style="margin-top: 70px;">
-    <h1>Creación de Usuario</h1>
-    <p>A la hora de administrar usuarios en sistemas Linux, siempre se encuentra en esta la creación de ellos. En según qué entornos
-        son tan simples como hacer mano de la interfaz gráfica, sin embargo, en según qué distribuciones esto no es posible. Hay que echar
-        mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p>
-    <p>La complicación en cuestión viene a la hora de ejecutar el comando, pues tenemos dos opciones para ello: adduser y useradd.</p>
-    <ul>
-        <li>Adduser. Simplemente se indica el nombre de usuario, lo demás datos son creados automáticamente.</li>
-        <li>Useradd. Debemos especificar cada uno de los datos que se creen junto al usuario.</li>
-    </ul>
-    <p>Nosotros consideramos que la mejor opción es useradd, pues es el que te va a permitir una mayor personalización usuario a usuario. Sin embargo,
-        también existe la posibilidad de que se quieran crear usuarios secuenciales.</p><br>
-    <p>En ese caso, creemos que no requiere la necesidad de personalización sino de velocidad, y adduser te la va a proporcionar más que useradd.</p>
-    <p>Ejemplo: adduser paco</p>
-    <p>Ejemplo: useradd -m -d /pruebas -k /etc/skel -g contactos paco</p><br>
-
-    {% if mensaje_error %}
-    <p>{{ mensaje_error }}</p>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="nombre_usuario">Nombre de usuario:</label><br>
-            <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Nombre que quieras que tenga el usuario"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="contrasena">Contraseña:</label><br>
-        <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del nuevo usuario"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="grupo_principal">Grupo principal:</label><br>
-        <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el nuevo usuario"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
-        <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="nombre_completo">Nombre completo:</label><br>
-        <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="skel">Directorio skel:</label><br>
-        <input type="text" id="skel" name="skel" placeholder="Esqueleto del usuario. Ej: /etc/skel"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="home">Directorio home:</label><br>
-        <input type="text" id="home" name="home" placeholder="Directorio principal del usuario. Ej: /home/usuario"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="shell">Shell:</label><br>
-        <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="expire">Fecha de expiración de la cuenta:</label><br>
-        <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="uid">UID:</label><br>
-        <input type="text" id="uid" name="uid" placeholder="Ej: 1002"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="gid">GID:</label><br>
-        <input type="text" id="gid" name="gid" placeholder="Ej: 1050"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
-        <input type="text" id="inactive" name="inactive" placeholder="Introducir numero"><br><br>
-        </div><br>
+        <h1>Creación de Usuario</h1>
+        <p>A la hora de administrar usuarios en sistemas Linux, siempre se encuentra en esta la creación de ellos. En según qué entornos
+            son tan simples como hacer mano de la interfaz gráfica, sin embargo, en según qué distribuciones esto no es posible. Hay que echar
+            mano de la línea de comandos, y ahí es donde se empieza a complicar la cosa.</p>
+        <p>La complicación en cuestión viene a la hora de ejecutar el comando, pues tenemos dos opciones para ello: adduser y useradd.</p>
+        <ul>
+            <li>Adduser. Simplemente se indica el nombre de usuario, lo demás datos son creados automáticamente.</li>
+            <li>Useradd. Debemos especificar cada uno de los datos que se creen junto al usuario.</li>
+        </ul>
+        <p>Nosotros consideramos que la mejor opción es useradd, pues es el que te va a permitir una mayor personalización usuario a usuario. Sin embargo,
+            también existe la posibilidad de que se quieran crear usuarios secuenciales.</p><br>
+        <p>En ese caso, creemos que no requiere la necesidad de personalización sino de velocidad, y adduser te la va a proporcionar más que useradd.</p>
+        <p>Ejemplo: adduser paco</p>
+        <p>Ejemplo: useradd -m -d /pruebas -k /etc/skel -g contactos paco</p><br>
     
-        <button type="submit">Crear Usuario</button>
-    </form>
-
-    <h1>Creación de Usuarios Secuenciales</h1>
-
-    {% if mensaje_error %}
-    <p>{{ mensaje_error }}</p>
-    {% endif %}
-
-    <form method="post" action="{% url 'usuarios:crear_usuarios_secuenciales' %}">
-        {% csrf_token %}
+        {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+        {% endif %}
+    
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre_usuario">Nombre de usuario:</label><br>
+                <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Nombre que quieras que tenga el usuario"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="contrasena">Contraseña:</label><br>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del nuevo usuario"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="grupo_principal">Grupo principal:</label><br>
+            <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el nuevo usuario"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
+            <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="nombre_completo">Nombre completo:</label><br>
+            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="skel">Directorio skel:</label><br>
+            <input type="text" id="skel" name="skel" placeholder="Esqueleto del usuario. Ej: /etc/skel"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="home">Directorio home:</label><br>
+            <input type="text" id="home" name="home" placeholder="Directorio principal del usuario. Ej: /home/usuario"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="shell">Shell:</label><br>
+            <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="expire">Fecha de expiración de la cuenta:</label><br>
+            <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="uid">UID:</label><br>
+            <input type="text" id="uid" name="uid" placeholder="Ej: 1002"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="gid">GID:</label><br>
+            <input type="text" id="gid" name="gid" placeholder="Ej: 1050"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
+            <input type="text" id="inactive" name="inactive" placeholder="Introducir numero"><br><br>
+            </div><br>
         
-        <div class="form-group">
-        <label for="prefijo">Prefijo del usuario:</label><br>
-        <input type="text" id="prefijo" name="prefijo" placeholder="Introduce el parametro a seguir para todos usuarios"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="inicio">Número de inicio:</label><br>
-        <input type="number" id="inicio" name="inicio" min="1" value="1" placeholder="Numero a seguir junto al nombre"><br><br>
-        </div><br>
-
-        <div class="form-group">
-        <label for="fin">Número de fin:</label><br>
-        <input type="number" id="fin" name="fin" min="1" value="10" placeholder="Numero tope de usuarios"><br><br>
-        </div><br>
-
-        <button type="submit" class="btn btn-primary">Crear Usuarios</button>
-    </form>
-</div>
+            <button type="submit">Crear Usuario</button>
+        </form>
+    
+        <h1>Creación de Usuarios Secuenciales</h1>
+    
+        {% if mensaje_error %}
+        <p>{{ mensaje_error }}</p>
+        {% endif %}
+    
+        <form method="post" action="{% url 'usuarios:crear_usuarios_secuenciales' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+            <label for="prefijo">Prefijo del usuario:</label><br>
+            <input type="text" id="prefijo" name="prefijo" placeholder="Introduce el parametro a seguir para todos usuarios"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="inicio">Número de inicio:</label><br>
+            <input type="number" id="inicio" name="inicio" min="1" value="1" placeholder="Numero a seguir junto al nombre"><br><br>
+            </div><br>
+    
+            <div class="form-group">
+            <label for="fin">Número de fin:</label><br>
+            <input type="number" id="fin" name="fin" min="1" value="10" placeholder="Numero tope de usuarios"><br><br>
+            </div><br>
+    
+            <button type="submit" class="btn btn-primary">Crear Usuarios</button>
+        </form>
+    </div>
 </body>
 </html>
