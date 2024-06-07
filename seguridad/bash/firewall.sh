@@ -38,18 +38,20 @@ then
     else
         echo "No se borraron configuraciones existentes."
     fi
+else
+    echo "No se borran las configuraciones existentes si las hay"
 fi
 
 # Recogemos los datos de las reglas
-tabla = {tabla}
-opcion = {opcion}
-cadena = {cadena}
-direccion_origen = {direccion_origen}
-puerto_origen = {puerto_origen}
-direccion_destino = {direccion_destino}
-puerto_destino = {puerto_destino}
-protocolo = {protocolo}
-accion = {accion}
+tabla="{tabla}"
+opcion="{opcion}"
+cadena="{cadena}"
+direccion_origen="{direccion_origen}"
+puerto_origen="{puerto_origen}"
+direccion_destino="{direccion_destino}"
+puerto_destino="{puerto_destino}"
+protocolo="{protocolo}"
+accion="{accion}"
 
 echo "Tabla: $tabla"
 echo "Opcion: $opcion"
@@ -63,6 +65,7 @@ echo "Accion: $accion"
 
 read -p "¿Desea aplicar esta nueva regla? (s/n): " confirmacion_regla
 if [ "$confirmacion_borrar" = "s" ]
+then
     # Montar el comando de iptables y ejecutarlo
     comando_iptables="iptables -t $tabla $opcion $cadena"
 
@@ -93,5 +96,5 @@ if [ "$confirmacion_borrar" = "s" ]
 
     echo "Configuraciones aplicadas correctamente"
 else
-    echo "Error: algunos campos necesarios están vacíos. La regla no se aplicará."
+    echo "Error: operacion cancelada. La regla no se aplicará."
 fi
