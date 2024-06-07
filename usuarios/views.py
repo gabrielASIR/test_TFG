@@ -37,7 +37,7 @@ def crear_usuario(request):
         if not uid.isdigit() or not int(uid) >= 1000:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El UID debe ser un número igual o mayor a 1000'})
 
-        if not gid.isdigit() or not int(gid) >= 1000 or not gid = "":
+        if not gid.isdigit() and gid != '' or (gid.isdigit() and int(gid) < 1000):
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El GID debe ser un número igual o mayor a 1000'})
 
         # Ruta al script de Bash para crear usuarios
