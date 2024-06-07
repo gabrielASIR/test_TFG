@@ -34,7 +34,7 @@ def crear_usuario(request):
         if shell not in shells_validos:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
 
-        if not uid.isdigit() or not int(uid) >= 1000:
+        if not uid.isdigit() and uid != '' or (uid.isdigit() and int(uid) < 1000):
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El UID debe ser un número igual o mayor a 1000'})
 
         if not gid.isdigit() and gid != '' or (gid.isdigit() and int(gid) < 1000):
