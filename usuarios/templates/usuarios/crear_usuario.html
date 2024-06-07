@@ -83,58 +83,58 @@
             </div><br>
     
             <div class="form-group">
-            <label for="contrasena">Contraseña:</label><br>
-            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del nuevo usuario"><br><br>
+                <label for="contrasena">Contraseña:</label><br>
+                <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña asignada al inicio de sesión del nuevo usuario"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="grupo_principal">Grupo principal:</label><br>
-            <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el nuevo usuario"><br><br>
+                <label for="grupo_principal">Grupo principal:</label><br>
+                <input type="text" id="grupo_principal" name="grupo_principal" placeholder="Grupo al que va a pertenecer el nuevo usuario"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
-            <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá"><br><br>
+                <label for="otros_grupos">Otros grupos (separados por comas):</label><br>
+                <input type="text" id="otros_grupos" name="otros_grupos" placeholder="Otros grupos a los que pertenecerá"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="nombre_completo">Nombre completo:</label><br>
-            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario"><br><br>
+                <label for="nombre_completo">Nombre completo:</label><br>
+                <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Nombre completo del usuario"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="skel">Directorio skel:</label><br>
-            <input type="text" id="skel" name="skel" placeholder="Esqueleto del usuario. Ej: /etc/skel"><br><br>
+                <label for="skel">Directorio skel:</label><br>
+                <input type="text" id="skel" name="skel" placeholder="Esqueleto del usuario. Ej: /etc/skel"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="home">Directorio home:</label><br>
-            <input type="text" id="home" name="home" placeholder="Directorio principal del usuario. Ej: /home/usuario"><br><br>
+                <label for="home">Directorio home:</label><br>
+                <input type="text" id="home" name="home" placeholder="Directorio principal del usuario. Ej: /home/usuario"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="shell">Shell:</label><br>
-            <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh"><br><br>
+                <label for="shell">Shell:</label><br>
+                <input type="text" id="shell" name="shell" placeholder="/bin/bash o /bin/sh o /bin/zsh"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="expire">Fecha de expiración de la cuenta:</label><br>
-            <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año"><br><br>
+                <label for="expire">Fecha de expiración de la cuenta:</label><br>
+                <input type="text" id="expire" name="expire" placeholder="Dia/Mes/Año"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="uid">UID:</label><br>
-            <input type="text" id="uid" name="uid" placeholder="Ej: 1002"><br><br>
+                <label for="uid">UID:</label><br>
+                <input type="text" id="uid" name="uid" placeholder="Ej: 1002"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="gid">GID:</label><br>
-            <input type="text" id="gid" name="gid" placeholder="Ej: 1050"><br><br>
+                <label for="gid">GID:</label><br>
+                <input type="text" id="gid" name="gid" placeholder="Ej: 1050"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
-            <input type="text" id="inactive" name="inactive" placeholder="Introducir numero"><br><br>
+                <label for="inactive">Días de inactividad antes de bloquear la cuenta:</label><br>
+                <input type="text" id="inactive" name="inactive" placeholder="Introducir numero"><br><br>
             </div><br>
         
             <button type="submit">Crear Usuario</button>
@@ -150,18 +150,18 @@
             {% csrf_token %}
             
             <div class="form-group">
-            <label for="prefijo">Prefijo del usuario:</label><br>
-            <input type="text" id="prefijo" name="prefijo" placeholder="Introduce el parametro a seguir para todos usuarios"><br><br>
+                <label for="prefijo">Prefijo del usuario:</label><br>
+                <input type="text" id="prefijo" name="prefijo" placeholder="Introduce el parametro a seguir para todos usuarios"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="inicio">Número de inicio:</label><br>
-            <input type="number" id="inicio" name="inicio" min="1" value="1" placeholder="Numero a seguir junto al nombre"><br><br>
+                <label for="inicio">Número de inicio:</label><br>
+                <input type="number" id="inicio" name="inicio" min="1" value="1" placeholder="Numero a seguir junto al nombre"><br><br>
             </div><br>
     
             <div class="form-group">
-            <label for="fin">Número de fin:</label><br>
-            <input type="number" id="fin" name="fin" min="1" value="10" placeholder="Numero tope de usuarios"><br><br>
+                <label for="fin">Número de fin:</label><br>
+                <input type="number" id="fin" name="fin" min="1" value="10" placeholder="Numero tope de usuarios"><br><br>
             </div><br>
     
             <button type="submit" class="btn btn-primary">Crear Usuarios</button>
