@@ -32,7 +32,7 @@ then
     # Realizar copia de seguridad si se especificó
     if [ "$realizar_copia" = "S" ]
     then
-        comando_backup="tar -czf /path/to/backup_directory/${nombre_usuario}_backup_$(date +%Y%m%d_%H%M%S).tar.gz /home/pruebass"
+        comando_backup="tar -czf /$HOME/recuperaciones/${nombre_usuario}_backup_$(date +%Y%m%d_%H%M%S).tar.gz /home/pruebass"
         echo "Realizando copia de seguridad de los archivos del usuario..."
         $comando_backup
     fi
