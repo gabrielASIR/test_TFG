@@ -27,28 +27,28 @@ read -p "¿Desea eliminar el usuario y todos sus archivos? (S/N): " confirmacion
 if [ "$confirmacion" = "S" ]
 then
     # Montaje de comando
-    comando_userdel="userdel"
+    comando_deluser="deluser"
 
     # Realizar copia de seguridad si se especificó
     if [ "$realizar_copia" = "S" ]
     then
-        comando_backup="tar -czf ${directorio_copia}/${nombre_usuario}_backup_$(date +%Y%m%d_%H%M%S).tar.gz /home/$nombre_usuario"
+        comando_backup="tar -czf /path/to/backup_directory/${nombre_usuario}_backup_$(date +%Y%m%d_%H%M%S).tar.gz /home/$nombre_usuario"
         echo "Realizando copia de seguridad de los archivos del usuario..."
         $comando_backup
     fi
 
     # Añadir opciones adicionales para eliminar completamente al usuario
-    [ "$eliminar_correo" = "S" ] && comando_userdel+=" --remove-mail"
-    [ "$eliminar_crontab" = "S" ] && comando_userdel+=" --remove-all-files"
-    [ "$forzar_eliminacion" = "S" ] && comando_userdel+=" --force"
-    [ "$eliminar_grupos" = "S" ] && comando_userdel+=" --remove-groups"
-    [ "$eliminar_home" = "S" ] && comando_userdel+=" --remove-home"
+    [ "$eliminar_correo" = "S" ] && comando_deluser+=" --remove-mail"
+    [ "$eliminar_crontab" = "S" ] && comando_deluser+=" --remove-all-files"
+    [ "$forzar_eliminacion" = "S" ] && comando_deluser+=" --force"
+    [ "$eliminar_grupos" = "S" ] && comando_deluser+=" --remove-groups"
+    [ "$eliminar_home" = "S" ] && comando_deluser+=" --remove-home"
 
     # Añadir el nombre de usuario al comando
-    comando_userdel+=" $nombre_usuario"
+    comando_deluser+=" $nombre_usuario"
 
-    # Ejecutar el comando userdel
-    $comando_userdel
+    # Ejecutar el comando deluser
+    $comando_deluser
 
     echo "Usuario $nombre_usuario y todos sus archivos eliminados correctamente."
 else
