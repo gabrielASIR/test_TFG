@@ -20,7 +20,7 @@
                             <select id="tabla_${numReglas}" name="tabla_${numReglas}" class="form-control">
                                 <option value="filter">filter</option>
                                 <option value="nat">nat</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -29,7 +29,7 @@
                                 <option value="-A">Agregar (-A)</option>
                                 <option value="-I">Insertar (-I)</option>
                                 <option value="-D">Eliminar (-D)</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
                         
                         <div class="form-group">
@@ -40,7 +40,7 @@
                                 <option value="FORWARD">FORWARD</option>
                                 <option value="PREROUTING">PREROUTING</option>
                                 <option value="POSTROUTING">POSTROUTING</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="puerto_origen_${numReglas}">Dirección de origen:</label><br>
+                            <label for="puerto_origen_${numReglas}">Puerto de origen:</label><br>
                             <input type="text" id="puerto_origen_${numReglas}" name="puerto_origen_${numReglas}" class="form-control" placeholder="Ej: 22, 80, 443..."><br><br>
                         </div>
 
@@ -70,7 +70,7 @@
                                 <option value="udp">UDP</option>
                                 <option value="icmp">ICMP</option>
                                 <option value="all">ALL</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -162,12 +162,12 @@
                 <select id="politica_por_defecto" name="politica_por_defecto" class="form-control">
                     <option value="ACCEPT">ACCEPT</option>
                     <option value="DROP">DROP</option>
-                </select><br><br>
+                </select><br>
             </div>
 
             <div class="form-group">
                 <input type="checkbox" id="borrar_configuraciones" name="borrar_configuraciones">
-                <label for="borrar_configuraciones">Borrar configuraciones</label><br><br>
+                <label for="borrar_configuraciones">Borrar configuraciones</label><br>
             </div>
 
             <div class="form-group">
@@ -185,7 +185,7 @@
                             <select id="tabla_1" name="tabla_1" class="form-control">
                                 <option value="filter">filter</option>
                                 <option value="nat">nat</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -194,7 +194,7 @@
                                 <option value="-A">Agregar (-A)</option>
                                 <option value="-I">Insertar (-I)</option>
                                 <option value="-D">Eliminar (-D)</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
                         
                         <div class="form-group">
@@ -205,7 +205,7 @@
                                 <option value="FORWARD">FORWARD</option>
                                 <option value="PREROUTING">PREROUTING</option>
                                 <option value="POSTROUTING">POSTROUTING</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -235,7 +235,7 @@
                                 <option value="udp">UDP</option>
                                 <option value="icmp">ICMP</option>
                                 <option value="all">ALL</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
 
                         <div class="form-group">
@@ -244,7 +244,7 @@
                                 <option value="ACCEPT">ACCEPT</option>
                                 <option value="DROP">DROP</option>
                                 <option value="REJECT">REJECT</option>
-                            </select><br><br>
+                            </select><br>
                         </div>
                         
                         <button type="button" class="btn btn-danger" onclick="eliminarRegla(this)">Eliminar Regla</button><br><br>
