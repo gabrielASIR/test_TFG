@@ -200,15 +200,6 @@ def eliminar_usuario(request):
         # Validar nombre de usuario
         if not nombre_usuario:
             mensaje_error = "El nombre de usuario es obligatorio."
-        # Añadir más validaciones para nombre_usuario si es necesario
-
-        # Validar directorio de copia de seguridad si se especificó
-        if realizar_copia == 'yes' and not directorio_copia:
-            mensaje_error = "Debe especificar un directorio para la copia de seguridad."
-        if directorio_copia and not os.path.exists(directorio_copia):
-            mensaje_error = "El directorio especificado para la copia de seguridad no existe."
-        if directorio_copia and not os.path.isdir(directorio_copia):
-            mensaje_error = "La ruta especificada no es un directorio."
 
         # Si hay algún error, renderizar el formulario con el mensaje de error
         if mensaje_error:
