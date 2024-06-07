@@ -48,7 +48,7 @@ then
     [ -n "$uid" ] && comando_useradd+=" -u $uid"
     [ -n "$gid" ] && comando_useradd+=" -g $gid"
     [ -n "$inactive" ] && comando_useradd+=" -f $inactive"
-    comando_useradd+=" -g $grupo_principal -p $contrasena_encriptada $nombre_usuario"
+    comando_useradd+=" -p $contrasena_encriptada $nombre_usuario"
 
     # Ejecución del comando completo
     $comando_useradd
