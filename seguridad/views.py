@@ -72,7 +72,7 @@ def firewall(request):
 
             # Reemplazar placeholders con los valores de las variables
             contenido_script = contenido_script.replace('{politica_por_defecto}', politica_por_defecto)
-            contenido_script = contenido_script.replace('{borrar_configuraciones}', borrar_configuraciones)
+            contenido_script = contenido_script.replace('{borrar_configuraciones}', borrar_configuraciones or '')
             contenido_script = contenido_script.replace('{tabla}', tabla)
             contenido_script = contenido_script.replace('{opcion}', opcion)
             contenido_script = contenido_script.replace('{cadena}', cadena)
