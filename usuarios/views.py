@@ -22,7 +22,7 @@ def crear_usuario(request):
         inactivo = request.POST.get('inactivo')
 
         # Validación de campos obligatorios
-        if not nombre_usuario or not contrasena or not grupo_principal or not shell:
+        if not nombre_usuario or not contrasena or not shell:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'Los campos nombre de usuario, contraseña, grupo principal y shell son obligatorios.'})
 
         # Validación de contraseña
@@ -34,9 +34,11 @@ def crear_usuario(request):
         if shell not in shells_validos:
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El shell especificado no es válido.'})
 
+        # Validación de UID
         if not uid.isdigit() and uid != '' or (uid.isdigit() and int(uid) < 1000):
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El UID debe ser un número igual o mayor a 1000'})
 
+        # Validación de GID
         if not gid.isdigit() and gid != '' or (gid.isdigit() and int(gid) < 1000):
             return render(request, 'usuarios/crear_usuario.html', {'mensaje_error': 'El GID debe ser un número igual o mayor a 1000'})
 
@@ -53,20 +55,15 @@ def crear_usuario(request):
         contenido_script = contenido_script.replace('{grupo_principal}', grupo_principal)
         contenido_script = contenido_script.replace('{directorio_principal}', directorio_principal)
         contenido_script = contenido_script.replace('{shell}', shell)
-        if otros_grupos:
-            contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos or '')
-        if nombre_completo:
-            contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo or '')
-        if skel:
-            contenido_script = contenido_script.replace('{skel}', skel or '/etc/skel')
-        if expire:
-            contenido_script = contenido_script.replace('{expire}', expire or '')
-        if uid:
-            contenido_script = contenido_script.replace('{uid}', uid or '')
-        if gid:
-            contenido_script = contenido_script.replace('{gid}', gid or '')
-        if inactivo:
-            contenido_script = contenido_script.replace('{inactivo}', inactivo or '')
+        contenido_script = contenido_script.replace('{otros_grupos}', otros_grupos or '')
+        contenido_script = contenido_script.replace('{nombre_completo}', nombre_completo or '')
+        contenido_script = contenido_script.replace('{skel}', skel or '/etc/skel')
+        contenido_script = contenido_script.replace('{expire}', expire or '')
+
+        # Manejar reemplazo de uid, gid, e inactivo
+        contenido_script = contenido_script.replace('{uid}', uid if uid is not None else '')
+        contenido_script = contenido_script.replace('{gid}', gid if gid is not None else '')
+        contenido_script = contenido_script.replace('{inactivo}', inactivo if inactivo is not None else '')
 
         # Devolver el script de Bash como una descarga de archivo
         respuesta = HttpResponse(contenido_script, content_type='application/x-shellscript')
