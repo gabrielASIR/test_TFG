@@ -13,7 +13,7 @@ validador_ipv4 = RegexValidator(
 def configuracion_backups(request):
     if request.method == 'POST':
         # Recoger los datos del formulario
-        nombre_copia = request.POST.get('nombre_copia')
+        nombre_copia = request.POST.get('nombre_backup')
         ruta_origen = request.POST.get('ruta_origen')
         ruta_destino = request.POST.get('ruta_destino')
         metodo_copia = request.POST.get('metodo_copia')
@@ -24,8 +24,10 @@ def configuracion_backups(request):
         # Validación de campos obligatorios
         if not nombre_copia:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'El nombre de la copia es obligatorio.'})
+
         if not ruta_origen:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'La ruta de origen es obligatoria.'})
+
         if not ruta_destino:
             return render(request, 'copias/configuracion_backups.html', {'mensaje_error': 'La ruta de destino es obligatoria.'})
 
@@ -100,7 +102,7 @@ def programar_copia(request):
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Introduzca un tiempo valido. Hora de 0-24, minutos de 0-60.'})
 
         # Procesar los días seleccionados para formar una cadena de días
-        dias_validos = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        dias_validos = ['1', '2', '3', '4', '5', '6', '0']
         if any(dia not in dias_validos for dia in dias_semana):
             return render(request, 'copias/programacion_copias.html', {'mensaje_error': 'Días de la semana no válidos.'})
 
