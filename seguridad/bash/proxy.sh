@@ -44,10 +44,10 @@ do
     # Configurar la regla según su tipo
     if [ "$tipo_regla" = "acl" ]
     then
-        echo "acl $acl $tipo_acl" >> "/etc/squid/conf.d/$ruta_configuracion/squid-custom.conf"
+        echo "acl $acl $tipo_acl" >> "/etc/squid/conf.d/$ruta_configuracion"
     elif [ "$tipo_regla" = "http_access" ]
     then
-        echo "http_access $http_access $accion_http_access $acl" >> "/etc/squid/conf.d/$ruta_configuracion/squid-custom.conf"
+        echo "http_access $http_access $accion_http_access $acl" >> "/etc/squid/conf.d/$ruta_configuracion"
     fi
 done
 

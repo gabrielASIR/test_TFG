@@ -113,8 +113,8 @@ def proxy(request):
             http_access = request.POST.get(f'http_access_{i}')
             accion_http_access = request.POST.get(f'accion_http_access_{i}')
 
-            if not tipo_regla or not acl or not tipo_acl or not http_access or not accion_http_access:
-                return render(request, 'seguridad/proxy.html', {'mensaje_error': 'Todos los campos son obligatorios.', 'num_reglas': num_reglas})
+            if not acl or not http_access:
+                return render(request, 'seguridad/proxy.html', {'mensaje_error': 'Se debe especificar una configuracion.', 'num_reglas': num_reglas})
 
             # Ruta al script de Bash existente
             ruta_script = 'seguridad/bash/proxy.sh'

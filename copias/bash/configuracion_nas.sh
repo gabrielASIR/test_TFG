@@ -39,7 +39,8 @@ sudo mkdir -p "$ruta_montaje"
 if [ "$protocolo" = "cifs" ]
 then
     sudo mount -t cifs "$direccion_nas" "$ruta_montaje" -o "username=$usuario_nas,password=$contrasena_nas"
-elif [ "$protocolo" = "nfs" ]; then
+elif [ "$protocolo" = "nfs" ]
+then
     sudo mount -t nfs "$direccion_nas" "$ruta_montaje"
 else
     echo "Protocolo de montaje no válido."
